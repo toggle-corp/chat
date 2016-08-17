@@ -16,6 +16,13 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
+from users.views import *
+from messenger.views import *
+
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+
+    # API
+    url(r'^api/v1/user/verify/$', UserVerification.as_view()),
 ]
