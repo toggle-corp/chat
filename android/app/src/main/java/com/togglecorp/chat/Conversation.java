@@ -5,6 +5,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,12 +83,15 @@ public class Conversation {
         db.delete(REL_TABLE, "conversation_id=?", new String[]{id+""});
     }
 
-    public void addUser(SQLiteOpenHelper helper, User user) {
+    public void addUsers(SQLiteOpenHelper helper, List<Long> users) {
         SQLiteDatabase db = helper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("conversation_id", id);
-        values.put("user_id", id);
-        db.insertWithOnConflict(REL_TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+
+        for (Long userId: users) {
+            values.put("user_id", userId);
+            db.insertWithOnConflict(REL_TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+        }
     }
 
     public List<User> getUsers(SQLiteOpenHelper helper) {
@@ -102,5 +109,26 @@ public class Conversation {
 
         cursor.close();
         return users;
+    }
+
+    public static void deleteAll(SQLiteOpenHelper helper) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        db.delete(REL_TABLE, null, null);
+        db.delete(TABLE, null, null);
+    }
+
+    public static Conversation add(SQLiteOpenHelper helper, JSONObject conversation) throws JSONException {
+        Conversation c = new Conversation();
+        c.id = conversation.getLong("pk");
+        c.title = conversation.getString("title");
+        c.save(helper);
+
+        List<Long> userIds = new ArrayList<>();
+        JSONArray users = conversation.getJSONArray("users");
+        for (int j=0; j<users.length(); ++j)
+            userIds.add(users.getLong(j));
+        c.addUsers(helper, userIds);
+
+        return c;
     }
 }

@@ -5,6 +5,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,5 +72,19 @@ public class User {
 
         id = (int) db.insertWithOnConflict(TABLE, null, values,
                 SQLiteDatabase.CONFLICT_REPLACE);
+    }
+
+    public static void deleteAll(SQLiteOpenHelper helper) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        db.delete(TABLE, null, null);
+    }
+
+    public static User add(SQLiteOpenHelper helper, JSONObject user) throws JSONException {
+        User u = new User();
+        u.id = user.getLong("pk");
+        u.username = user.getString("username");
+        u.full_name = user.getString("full_name");
+        u.save(helper);
+        return u;
     }
 }

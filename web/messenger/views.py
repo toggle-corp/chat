@@ -124,7 +124,8 @@ def get_message_data(message):
         'pk': message.pk,
         'posted_by': message.posted_by.pk,
         'posted_at': int(time.mktime(message.posted_at.timetuple())*1000),
-        'message': message.message
+        'message': message.message,
+        'conversation_id': message.conversation.pk
     }
 
 

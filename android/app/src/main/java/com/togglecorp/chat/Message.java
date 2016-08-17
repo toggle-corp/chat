@@ -5,6 +5,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,5 +81,21 @@ public class Message {
 
         id = (int) db.insertWithOnConflict(TABLE, null, values,
                 SQLiteDatabase.CONFLICT_REPLACE);
+    }
+
+    public static void deleteAll(SQLiteOpenHelper helper) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        db.delete(TABLE, null, null);
+    }
+
+    public static Message add(SQLiteOpenHelper helper, JSONObject message) throws JSONException {
+        Message m = new Message();
+        m.id = message.getLong("pk");
+        m.posted_at = message.getLong("posted_at");
+        m.posted_by = message.getLong("posted_by");
+        m.message = message.getString("message");
+        m.conversation_id = message.getLong("conversation_id");
+        m.save(helper);
+        return m;
     }
 }

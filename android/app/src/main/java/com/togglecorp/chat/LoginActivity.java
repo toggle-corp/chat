@@ -66,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... voids) {
             try {
-                Client client = new Client(mUsername, mPassword);
+                Client client = new Client(LoginActivity.this, mUsername, mPassword);
                 client.post("api/v1/user/verify/");
                 success = true;
             } catch (Exception e) {

@@ -18,10 +18,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(User.CREATE_TABLE);
         db.execSQL(Conversation.CREATE_TABLE);
         db.execSQL(Conversation.CREATE_REL_TABLE);
+        db.execSQL(Message.CREATE_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
+        db.execSQL(Message.DROP_TABLE);
         db.execSQL(Conversation.DROP_REL_TABLE);
         db.execSQL(Conversation.DROP_TABLE);
         db.execSQL(User.DROP_TABLE);
