@@ -23,9 +23,9 @@ class UserVerification(View):
     def post(self, request):
         if not basic_authenticate(request):
             return authentication_error
-        inData = json.loads(request.body.decode('utf-8'))
-        outData = inData
-        return JsonResponse(inData)
+        in_data = json.loads(request.body.decode('utf-8'))
+        out_data = in_data
+        return JsonResponse(out_data)
 
 
 @method_decorator(csrf_exempt, name='dispatch')

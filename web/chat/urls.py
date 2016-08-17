@@ -32,4 +32,9 @@ urlpatterns = [
     url(r'^api/v1/conversation/add/$', ConversationAddApiView.as_view()),
     url(r'^api/v1/conversation/get/(?P<id>\d+)/$', ConversationApiView.as_view()),
     url(r'^api/v1/conversation/get/$', ConversationApiView.as_view()),
+    url(r'^api/v1/conversation/delete/(?P<id>\d+)/$', ConversationDeleteApiView.as_view()),
+    url(r'^api/v1/conversation/edit/(?P<id>\d+)/$', ConversationEditApiView.as_view()),
+
+    url(r'^api/v1/message/get/(?P<conversation_id>\d+)/$', MessageApiView.as_view()),
+    url(r'^api/v1/message/add/(?P<conversation_id>\d+)/$', MessageAddApiView.as_view()),
 ]

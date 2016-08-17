@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login
 
 import base64
 

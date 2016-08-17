@@ -16,8 +16,11 @@ class Conversation(models.Model):
 class Message(models.Model):
     conversation = models.ForeignKey(Conversation)
     posted_by = models.ForeignKey(User)
-    posted_at = models.DateTimeField(auto_now_add=True)
+    posted_at = models.DateTimeField()
     message = models.TextField()
 
     def __str__(self):
         return self.message
+
+    class Meta:
+        ordering = ['-posted_at']
