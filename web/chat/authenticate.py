@@ -13,6 +13,7 @@ def basic_authenticate(request):
                 username, password = auth.split(':', 1)
                 user = authenticate(username=username, password=password)
                 if user:
+                    login(request, user)
                     return True
     return False
 
