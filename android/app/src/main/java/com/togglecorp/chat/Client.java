@@ -1,6 +1,9 @@
 package com.togglecorp.chat;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.Base64;
 
 import org.json.JSONArray;
@@ -31,10 +34,23 @@ public class Client {
     private final String mPassword;
     private final Context mContext;
 
-    public Client(Context context, String username, String password) {
+    public Client(Context context, String username, String password) throws NetworkException {
         mContext = context;
         mUsername = username;
         mPassword = password;
+
+        if (mUsername.length() == 0 && mPassword.length() == 0)
+            throw new NetworkException(401, "Invalid credentials");
+    }
+
+    public Client(Context context) throws NetworkException {
+        mContext = context;
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mUsername = preferences.getString("username", "");
+        mPassword = preferences.getString("password", "");
+
+        if (mUsername.length() == 0 && mPassword.length() == 0)
+            throw new NetworkException(401, "Invalid credentials");
     }
 
     public JSONObject post(String path, JSONObject data) throws JSONException, IOException, NetworkException {
@@ -83,7 +99,7 @@ public class Client {
     public void getUsers() throws JSONException, NetworkException, IOException {
         JSONObject response = post("api/v1/user/get/");
 
-        DatabaseHelper helper = new DatabaseHelper(mContext);
+        DatabaseHelper helper = MainActivity.getDatabaseHelper(mContext);
         User.deleteAll(helper);
 
         JSONArray users = response.getJSONArray("users");
@@ -96,7 +112,7 @@ public class Client {
     public void getConversations() throws JSONException, NetworkException, IOException {
         JSONObject response = post("api/v1/conversation/get/");
 
-        DatabaseHelper helper = new DatabaseHelper(mContext);
+        DatabaseHelper helper = MainActivity.getDatabaseHelper(mContext);
         Conversation.deleteAll(helper);
 
         JSONArray conversations = response.getJSONArray("conversations");
@@ -108,7 +124,7 @@ public class Client {
 
     public Conversation getConversation(long id) throws JSONException, NetworkException, IOException {
         JSONObject response = post("api/v1/conversation/get/" + id + "/");
-        DatabaseHelper helper = new DatabaseHelper(mContext);
+        DatabaseHelper helper = MainActivity.getDatabaseHelper(mContext);
         return Conversation.add(helper, response);
     }
 
@@ -124,7 +140,7 @@ public class Client {
         }
 
         JSONObject response = post("api/v1/conversation/add/", data);
-        return Conversation.add(new DatabaseHelper(mContext), response);
+        return Conversation.add(MainActivity.getDatabaseHelper(mContext), response);
     }
 
     public void getMessages(long conversationId, Long startTime, Long endTime, Integer count) throws JSONException, NetworkException, IOException {
@@ -137,7 +153,7 @@ public class Client {
             data.put("count", count);
 
         JSONObject response = post("api/v1/message/get/"+conversationId+"/", data);
-        DatabaseHelper helper = new DatabaseHelper(mContext);
+        DatabaseHelper helper = MainActivity.getDatabaseHelper(mContext);
 
         JSONArray messages = response.getJSONArray("messages");
         for (int i=0; i<messages.length(); ++i) {
@@ -146,14 +162,39 @@ public class Client {
         }
     }
 
-    public Message addMessage(long conversationId, String message, long posted_at, long posted_by) throws IOException, NetworkException, JSONException {
+    public Message addMessage(long conversationId, String message, Long posted_at) throws IOException, NetworkException, JSONException {
         JSONObject data = new JSONObject();
         data.put("message", message);
-        data.put("posted_at", posted_at);
-        data.put("posted_by", posted_by);
+        if (posted_at != null)
+            data.put("posted_at", posted_at);
 
         JSONObject response = post("api/v1/message/add/"+conversationId+"/", data);
-        DatabaseHelper helper = new DatabaseHelper(mContext);
+        DatabaseHelper helper = MainActivity.getDatabaseHelper(mContext);
         return Message.add(helper, response);
+    }
+
+
+    public interface Listener {
+        void process();
+        void post();
+    }
+
+    public static class NetworkHandler extends AsyncTask<Void, Void, Void> {
+        private final Listener mListener;
+
+        public NetworkHandler(Listener listener) {
+            mListener = listener;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            mListener.process();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            mListener.post();
+        }
     }
 }

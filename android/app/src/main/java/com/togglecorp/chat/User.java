@@ -33,6 +33,7 @@ public class User {
             while (!cursor.isAfterLast()) {
                 users.add(get(cursor));
             }
+            cursor.moveToNext();
         }
 
         cursor.close();

@@ -10,6 +10,7 @@ from datetime import datetime
 
 from chat.authenticate import *
 from messenger.models import *
+from messenger.cloud_messaging import *
 
 
 def get_conversation_data(conversation):
@@ -183,4 +184,8 @@ class MessageAddApiView(View):
         message.message = in_data["message"]
         message.save()
 
-        return JsonResponse(get_message_data(message))
+        message_data = get_message_data(message);
+        message_data.update({"type": "new_message"})
+        send(message.conversation.users.all(), message_data);
+
+        return JsonResponse(message_data)

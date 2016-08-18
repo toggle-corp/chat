@@ -28,6 +28,8 @@ urlpatterns = [
     url(r'^api/v1/user/get/(?P<id>\d+)/$', UserApiView.as_view()),
     url(r'^api/v1/user/get/$', UserApiView.as_view()),
 
+    url(r'^api/v1/fcm/register/$', FcmApiView.as_view()),
+
     url(r'^api/v1/conversation/add/(?P<id>\d+)/$', ConversationAddApiView.as_view()),
     url(r'^api/v1/conversation/add/$', ConversationAddApiView.as_view()),
     url(r'^api/v1/conversation/get/(?P<id>\d+)/$', ConversationApiView.as_view()),

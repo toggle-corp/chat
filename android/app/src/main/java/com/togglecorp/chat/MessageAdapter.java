@@ -2,33 +2,43 @@ package com.togglecorp.chat;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
     private Context mContext;
-    private ArrayList<Message> mMessages;
+    private List<Message> mMessages;
 
-    public MessageAdapter(Context context){
+    public MessageAdapter(Context context, List<Message> messages){
         mContext = context;
+        mMessages = messages;
     }
 
     @Override
     public MessageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return null;
+        View itemView = LayoutInflater.
+                from(parent.getContext()).
+                inflate(R.layout.layout_message, parent, false);
+
+        return new MessageViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(MessageViewHolder holder, int position) {
-
+        Message msg = mMessages.get(position);
+        DatabaseHelper helper = MainActivity.getDatabaseHelper(mContext);
+        holder.username.setText(msg.getOP(helper).full_name);
+        holder.time.setText(msg.getTime());
+        holder.messageText.setText(msg.message);
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return mMessages.size();
     }
 
     class MessageViewHolder extends RecyclerView.ViewHolder{

@@ -5,12 +5,16 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class Message {
     public long id;
@@ -37,6 +41,7 @@ public class Message {
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
                 messages.add(get(cursor));
+                cursor.moveToNext();
             }
         }
 
@@ -97,5 +102,23 @@ public class Message {
         m.conversation_id = message.getLong("conversation_id");
         m.save(helper);
         return m;
+    }
+
+    public User getOP(SQLiteOpenHelper helper) {
+        return User.get(helper, posted_by);
+    }
+
+    public Conversation getConversation(SQLiteOpenHelper helper) {
+        return Conversation.get(helper, conversation_id);
+    }
+
+    public String getTime() {
+        Calendar cal = Calendar.getInstance();
+        TimeZone tz = cal.getTimeZone();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.US);
+        sdf.setTimeZone(tz);
+
+        return sdf.format(new Date(posted_at));
     }
 }

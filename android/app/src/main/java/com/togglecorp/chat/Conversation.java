@@ -105,6 +105,7 @@ public class Conversation {
             while (!cursor.isAfterLast()) {
                 users.add(User.get(helper, cursor.getLong(cursor.getColumnIndex("user_id"))));
             }
+            cursor.moveToNext();
         }
 
         cursor.close();
