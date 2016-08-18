@@ -16,6 +16,8 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
+from chat.views import *
+
 from users.views import *
 from messenger.views import *
 
@@ -39,4 +41,6 @@ urlpatterns = [
 
     url(r'^api/v1/message/get/(?P<conversation_id>\d+)/$', MessageApiView.as_view()),
     url(r'^api/v1/message/add/(?P<conversation_id>\d+)/$', MessageAddApiView.as_view()),
+
+    url(r'^$', IndexView.as_view()),
 ]

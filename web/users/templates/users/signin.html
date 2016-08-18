@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block title %}Chat | Toggle Corp.{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/signin.css' %}">
+{% endblock %}
+
+{% block body %}
+<div id="login-form-wrapper">
+    <header>
+        <div id="toggle-logo">Toggle<span>Corp</span></div>
+        <div id="app-name">Private chat</div>
+    </header>
+    <form>
+        <input type="text" placeholder="Username">
+        <input type="password" placeholder="Password">
+        <div id="submit-wrapper">
+            <input type="submit" class="btn">
+        </div>
+    </form>
+</div>
+{% endblock %}

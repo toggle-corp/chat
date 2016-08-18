@@ -1,0 +1,21 @@
+$primary-color: #e04756;
+
+body{
+    font-size: 14px;
+    font-family: 'Roboto', sans-serif;
+    background-color: #fafafa;
+    color: #404040;
+}
+
+
+
+a, button, input[type="button"], input[type="submit"] {
+    text-transform: uppercase;
+}
+
+.btn {
+    padding: 10px 24px;
+    border: 1px solid $primary-color;
+    color: $primary-color;
+    background-color: transparent;
+}
