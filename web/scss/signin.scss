@@ -1,0 +1,51 @@
+@import "base";
+
+#login-form-wrapper{
+    width: 600px;
+    margin:100px auto;
+    padding: 32px;
+    background-color: #fff;
+    box-shadow: 0 3px 7px 3px rgba(0, 0, 0, 0.3);
+
+    header{
+        text-align: center;
+
+        #toggle-logo{
+            text-transform: uppercase;
+            font-size: 4em;
+
+            span{
+                font-weight: 300;
+                color: $primary-color;
+            }
+        }
+
+        #app-name{
+            text-transform: uppercase;
+            letter-spacing: 0.4em;
+            font-size: 2em;
+        }
+    }
+
+    form{
+        margin-top: 48px;
+
+        input{
+            margin-bottom: 32px;
+            outline: none;
+            font-family: 'Roboto', sans-serif;
+        }
+        input[type="text"], input[type="password"]{
+            padding: 8px 16px;
+            border: none;
+            background-color: transparent;
+            border-bottom: 1px solid #888;
+            width: calc(100% - 32px);
+        }
+        #submit-wrapper{
+            text-align: right;
+        }
+
+    }
+
+}

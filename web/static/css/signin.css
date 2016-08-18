@@ -1,0 +1,49 @@
+body {
+  font-size: 14px;
+  font-family: 'Roboto', sans-serif;
+  background-color: #fafafa;
+  color: #404040; }
+
+a, button, input[type="button"], input[type="submit"] {
+  text-transform: uppercase; }
+
+.btn {
+  padding: 10px 24px;
+  border: 1px solid #e04756;
+  color: #e04756;
+  background-color: transparent; }
+
+#login-form-wrapper {
+  width: 600px;
+  margin: 100px auto;
+  padding: 32px;
+  background-color: #fff;
+  box-shadow: 0 3px 7px 3px rgba(0, 0, 0, 0.3); }
+  #login-form-wrapper header {
+    text-align: center; }
+    #login-form-wrapper header #toggle-logo {
+      text-transform: uppercase;
+      font-size: 4em; }
+      #login-form-wrapper header #toggle-logo span {
+        font-weight: 300;
+        color: #e04756; }
+    #login-form-wrapper header #app-name {
+      text-transform: uppercase;
+      letter-spacing: 0.4em;
+      font-size: 2em; }
+  #login-form-wrapper form {
+    margin-top: 48px; }
+    #login-form-wrapper form input {
+      margin-bottom: 32px;
+      outline: none;
+      font-family: 'Roboto', sans-serif; }
+    #login-form-wrapper form input[type="text"], #login-form-wrapper form input[type="password"] {
+      padding: 8px 16px;
+      border: none;
+      background-color: transparent;
+      border-bottom: 1px solid #888;
+      width: calc(100% - 32px); }
+    #login-form-wrapper form #submit-wrapper {
+      text-align: right; }
+
+/*# sourceMappingURL=signin.css.map */
