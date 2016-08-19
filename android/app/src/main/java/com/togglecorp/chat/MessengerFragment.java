@@ -84,7 +84,7 @@ public class MessengerFragment extends Fragment {
                 // First download messages from server to local database.
                 try {
                     Client client = new Client(getContext());
-                    client.getMessages(mConversationId, null, null, null);
+                    client.getMessages(mConversationId, null, System.currentTimeMillis(), 20);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -93,6 +93,9 @@ public class MessengerFragment extends Fragment {
             @Override
             public void post() {
                 fetchMessages();
+                NotificationManager notificationManager =
+                        (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.cancel(0);
             }
         }).execute();
     }
@@ -132,6 +135,8 @@ public class MessengerFragment extends Fragment {
         }).execute();
     }
 
+
+    // FCM broadcast receiver.
     public static final String BROADCAST_INTENT = "TOGGLE:CHAT_MESSAGE_RECEIVED";
 
     @Override
@@ -149,10 +154,6 @@ public class MessengerFragment extends Fragment {
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            NotificationManager notificationManager =
-                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.cancel(0);
-
             downloadMessages();
         }
     };

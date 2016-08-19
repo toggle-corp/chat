@@ -62,7 +62,8 @@ public class Message {
     public static Message get(SQLiteOpenHelper helper, long id) {
         SQLiteDatabase db = helper.getReadableDatabase();
         Cursor cursor =
-                db.query(true, TABLE, null, "id=?", new String[]{id+""}, null, null, null, null);
+                db.query(true, TABLE, null, "id=?", new String[]{id+""}, null, null,
+                        "posted_at DESC", null);
 
         Message message = null;
         if (cursor.moveToFirst()) {
@@ -93,6 +94,13 @@ public class Message {
         db.delete(TABLE, null, null);
     }
 
+    public static void deleteExcept(SQLiteOpenHelper helper, int except) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        db.delete(TABLE,
+                "ROWID NOT IN (SELECT ROWID FROM " + TABLE + " ORDER BY posted_at DESC LIMIT " + except + ")",
+                null);
+    }
+
     public static Message add(SQLiteOpenHelper helper, JSONObject message) throws JSONException {
         Message m = new Message();
         m.id = message.getLong("pk");
@@ -116,7 +124,7 @@ public class Message {
         Calendar cal = Calendar.getInstance();
         TimeZone tz = cal.getTimeZone();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.US);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM HH:mm", Locale.US);
         sdf.setTimeZone(tz);
 
         return sdf.format(new Date(posted_at));

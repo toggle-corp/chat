@@ -17,13 +17,17 @@ from django.conf.urls import url
 from django.contrib import admin
 
 from chat.views import *
-
 from users.views import *
 from messenger.views import *
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+
+    url(r'^$', IndexView.as_view(), name="index"),
+    url(r'^signin/$', SigninView.as_view(), name="signin"),
+    url(r'^signout/$', SignoutView.as_view(), name="signout"),
+    url(r'^messenger/$', MessengerView.as_view(), name="messenger"),
 
     # API
     url(r'^api/v1/user/verify/$', UserVerification.as_view()),
@@ -41,6 +45,4 @@ urlpatterns = [
 
     url(r'^api/v1/message/get/(?P<conversation_id>\d+)/$', MessageApiView.as_view()),
     url(r'^api/v1/message/add/(?P<conversation_id>\d+)/$', MessageAddApiView.as_view()),
-
-    url(r'^$', IndexView.as_view()),
 ]

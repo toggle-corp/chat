@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block title %}Chat | Toggle Corp.{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block body %}
+
+<div>
+    <h1> Chat </h1>
+
+    {% if conversation %}
+    <h2> {{ conversation.title }} </h2>
+
+    <div id="messages-container"></div>
+
+    <textarea id="message-input"></textarea>
+    <input id="message-send" type="button" value="Send">
+    {% endif %}
+
+</div>
+
+
+<script>
+
+</script>
+
+{% endblock %}

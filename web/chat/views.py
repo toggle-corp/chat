@@ -4,4 +4,6 @@ from django.views.generic import View, TemplateView
 
 class IndexView(View):
     def get(self, request):
-        return render(request, "users/signin.html")
+        if request.user.is_authenticated():
+            return redirect('messenger')
+        return redirect('signin')
