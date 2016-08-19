@@ -30,7 +30,7 @@ function getTimeString(timestamp) {
     var hours = date.getHours();
     var minutes = "0" + date.getMinutes();
 
-    var formattedTime = day + " " + month + " " + hours + ':' + minutes.substr(-2);
+    var formattedTime = day + " " + month + ", " + hours + ':' + minutes.substr(-2);
     return formattedTime;
 }
 
@@ -47,7 +47,11 @@ function refreshMessages() {
         element.find("p").text(message.message);
         element.removeAttr("hidden");
         element.removeAttr("id");
+        element.addClass("message")
         element.appendTo(messageList);
+        if(i != messages.length-1){
+            $("<hr>").appendTo(messageList);
+        }
     }
 }
 

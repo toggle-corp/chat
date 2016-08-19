@@ -26,28 +26,54 @@ body{
             width: 40%;
             float: left;
             background-color: #fff;
+
+            box-shadow: 3px 0 5px 2px rgba(0, 0, 0, 0.2);
         }
         #conversation{
             height: 90vh;
             margin-left: 40%;
 
+
             #message-list{
                 height: 80vh;
-                #message{
+                overflow-y: scroll;
 
+                .message{
+                    padding: 8px 32px;
+                    author{
+                        font-weight: 700;
+                        margin-right: 24px;
+                    }
+                    time{
+                        font-weight: 300;
+                        font-size: smaller;
+                    }
+                }
+
+                hr{
+                    margin: 6px 24px;
+                    border-top: 1px solid #f0f0f0;
                 }
             }
             #message-input{
                 height: 10vh;
-                padding: 24px;
+                display: flex;
+                justify-content: center;
+                flex-direction: column;
+
                 input{
-                    width: 80%;
+                    width: 70%;
                     padding: 8px 16px;
                     outline: none;
                     border: none;
                     border-bottom: 1px solid #969696;
                     background-color: transparent;
+                    margin-left: 24px;
                 }
+                input:focus{
+                    border-bottom-color: $primary-color;
+                }
+
                 button{
                     outline: none;
                     margin-left: 10px;

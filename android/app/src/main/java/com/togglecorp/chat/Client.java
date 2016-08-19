@@ -28,8 +28,8 @@ public class Client {
         }
     }
 
-//    public final static String BASE_URL = "http://chat.togglecorp.com/";
-    public final static String BASE_URL = "http://192.168.100.12:8000/";
+    public final static String BASE_URL = "http://chat.togglecorp.com/";
+//    public final static String BASE_URL = "http://192.168.100.12:8000/";
 
     private final String mUsername;
     private final String mPassword;
