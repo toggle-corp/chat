@@ -9,11 +9,15 @@
 
 {% block script %}
 <script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/messenger.js' %}"></script>
+
 <script>
-console.log('{{ conversation.pk }}');
-$('#send-btn').click(function(){
-    alert('ok dood');
-});
+    var conversationId = {{conversation.pk}};
+    var users = {
+    {% for user in users %}
+    {{user.pk}} : "{{user.first_name}} {{user.last_name}}",
+    {% endfor %}
+    };
 </script>
 
 {% endblock %}
@@ -37,7 +41,7 @@ $('#send-btn').click(function(){
     </div>
 </section>
 
-<article class="message-template" hidden>
+<article id="message-template" class="message-template" hidden>
     <author></author>
     <time></time>
     <p></p>

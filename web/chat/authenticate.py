@@ -5,6 +5,9 @@ import base64
 
 
 def basic_authenticate(request):
+    if request.user.is_authenticated():
+        return True
+
     if 'HTTP_AUTHORIZATION' in request.META:
         auth = request.META['HTTP_AUTHORIZATION'].split()
         if len(auth) == 2:

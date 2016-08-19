@@ -56,9 +56,10 @@ public class MessengerFragment extends Fragment {
             }
         });
 
-        downloadMessages();
         fetchMessages();
         mRecyclerView.smoothScrollToPosition(mAdapter.getItemCount());
+
+        downloadMessages();
 
         layoutManager.setStackFromEnd(true);
         return rootView;
@@ -132,6 +133,8 @@ public class MessengerFragment extends Fragment {
     public void onResume() {
         super.onResume();
         getContext().registerReceiver(mMessageReceiver, new IntentFilter(BROADCAST_INTENT));
+        fetchMessages();
+        downloadMessages();
     }
 
     @Override
@@ -143,6 +146,10 @@ public class MessengerFragment extends Fragment {
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            NotificationManager notificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.cancel(0);
+
             downloadMessages();
         }
     };

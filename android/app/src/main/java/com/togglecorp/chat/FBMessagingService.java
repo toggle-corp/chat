@@ -12,6 +12,8 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import org.json.JSONObject;
+
 import java.util.Map;
 
 public class FBMessagingService extends FirebaseMessagingService {
@@ -29,9 +31,17 @@ public class FBMessagingService extends FirebaseMessagingService {
 
                 if (user != null) {
                     sendNotification(user.full_name, message.get("message"));
-
                     Intent intent = new Intent(MessengerFragment.BROADCAST_INTENT);
                     sendBroadcast(intent);
+
+                    // Add to database as well.
+                    Message m = new Message();
+                    m.id = Long.parseLong(message.get("id"));
+                    m.conversation_id = Long.parseLong(message.get("conversation_id"));
+                    m.posted_at = Long.parseLong(message.get("posted_at"));
+                    m.posted_by = Long.parseLong(message.get("posted_by"));
+                    m.message = message.get("message");
+                    m.save(MainActivity.getDatabaseHelper(this));
                 }
             }
         }

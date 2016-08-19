@@ -20,6 +20,7 @@ class MessengerView(View):
 
         context = {}
         context["conversation"] = Conversation.objects.get(pk=1)
+        context["users"] = User.objects.all()
         return render(request, 'messenger/messenger.html', context)
 
 
