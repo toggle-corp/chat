@@ -36,7 +36,7 @@ public class FBMessagingService extends FirebaseMessagingService {
 
                     // Add to database as well.
                     Message m = new Message();
-                    m.id = Long.parseLong(message.get("id"));
+                    m.id = Long.parseLong(message.get("pk"));
                     m.conversation_id = Long.parseLong(message.get("conversation_id"));
                     m.posted_at = Long.parseLong(message.get("posted_at"));
                     m.posted_by = Long.parseLong(message.get("posted_by"));

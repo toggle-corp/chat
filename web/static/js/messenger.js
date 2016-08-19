@@ -76,7 +76,7 @@ function getMessages() {
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function(data) {
-            for (var i=0; i<data.messages.length; ++i)
+            for (var i=data.messages.length-1; i>=0; --i)
                 addMessage(data.messages[i]);
             refreshMessages();
         },
