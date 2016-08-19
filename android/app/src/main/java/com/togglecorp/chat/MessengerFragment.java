@@ -28,7 +28,7 @@ public class MessengerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_messenger, container, false);
 
-        final RecyclerView.LayoutManager layoutManager;
+        final LinearLayoutManager layoutManager;
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view_messages);
         mRecyclerView.setHasFixedSize(true);
@@ -41,21 +41,6 @@ public class MessengerFragment extends Fragment {
 
         mAdapter = new MessageAdapter(getActivity(), mMessages);
         mRecyclerView.setAdapter(mAdapter);
-
-
-        // Scroll to bottom when it is resized.
-        // TODO: Change this to scroll to previously shown item instead of bottom.
-        mRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View view, int left, int top, int right, final int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                mRecyclerView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mRecyclerView.smoothScrollToPosition(mAdapter.getItemCount());
-                    }
-                }, 100);
-            }
-        });
 
         // Send message.
         Button sendButton = (Button) rootView.findViewById(R.id.send_message);
@@ -73,6 +58,9 @@ public class MessengerFragment extends Fragment {
 
         downloadMessages();
         fetchMessages();
+        mRecyclerView.smoothScrollToPosition(mAdapter.getItemCount());
+
+        layoutManager.setStackFromEnd(true);
         return rootView;
     }
 
@@ -93,9 +81,12 @@ public class MessengerFragment extends Fragment {
             @Override
             public void post() {
                 fetchMessages();
-                NotificationManager notificationManager =
-                        (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
-                notificationManager.cancel(0);
+
+                if (getContext() != null) {
+                    NotificationManager notificationManager =
+                            (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                    notificationManager.cancel(0);
+                }
             }
         }).execute();
     }
@@ -110,8 +101,6 @@ public class MessengerFragment extends Fragment {
         for (Message m: messages)
             mMessages.add(m);
         mAdapter.notifyDataSetChanged();
-
-        mRecyclerView.smoothScrollToPosition(mAdapter.getItemCount());
     }
 
     // Send message.

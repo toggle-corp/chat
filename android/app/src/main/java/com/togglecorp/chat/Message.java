@@ -124,7 +124,7 @@ public class Message {
         Calendar cal = Calendar.getInstance();
         TimeZone tz = cal.getTimeZone();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM HH:mm", Locale.US);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM HH:mm", Locale.US);
         sdf.setTimeZone(tz);
 
         return sdf.format(new Date(posted_at));
