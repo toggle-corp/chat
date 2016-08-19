@@ -4,27 +4,43 @@
 {% block title %}Chat | Toggle Corp.{% endblock %}
 
 {% block head %}
+<link rel="stylesheet" href="{% static 'css/messenger.css' %}">
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script>
+console.log('{{ conversation.pk }}');
+$('#send-btn').click(function(){
+    alert('ok dood');
+});
+</script>
+
 {% endblock %}
 
 {% block body %}
 
-<div>
-    <h1> Chat </h1>
+<nav id="navbar">
+    <div id="title"> {{ conversation.title }} </div>
+</nav>
 
-    {% if conversation %}
-    <h2> {{ conversation.title }} </h2>
+<section id="body">
+    <div id="conversation-list">
+    </div>
+    <div id="conversation">
+        <div id="message-list">
+        </div>
+        <div id="message-input">
+            <input type="text" placeholder="Type your message" id="msg-input">
+            <button class="btn" id="send-btn">Send</button>
+        </div>
+    </div>
+</section>
 
-    <div id="messages-container"></div>
-
-    <textarea id="message-input"></textarea>
-    <input id="message-send" type="button" value="Send">
-    {% endif %}
-
-</div>
-
-
-<script>
-
-</script>
+<article class="message-template" hidden>
+    <author></author>
+    <time></time>
+    <p></p>
+</article>
 
 {% endblock %}

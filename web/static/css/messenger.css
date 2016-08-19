@@ -1,0 +1,55 @@
+body {
+  font-size: 14px;
+  font-family: 'Roboto', sans-serif;
+  background-color: #fafafa;
+  color: #404040; }
+
+a, button, input[type="button"], input[type="submit"] {
+  text-transform: uppercase; }
+
+.btn {
+  padding: 10px 24px;
+  border: 1px solid #e04756;
+  color: #e04756;
+  background-color: transparent; }
+
+body {
+  padding: 0;
+  margin: 0;
+  height: 100vh; }
+  body #navbar {
+    display: block;
+    height: 10vh;
+    background-color: #e04756;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    flex-direction: column; }
+    body #navbar #title {
+      font-size: 2em;
+      margin-left: 80px; }
+  body #body #conversation-list {
+    height: 90vh;
+    width: 40%;
+    float: left;
+    background-color: #fff; }
+  body #body #conversation {
+    height: 90vh;
+    margin-left: 40%; }
+    body #body #conversation #message-list {
+      height: 80vh; }
+    body #body #conversation #message-input {
+      height: 10vh;
+      padding: 24px; }
+      body #body #conversation #message-input input {
+        width: 80%;
+        padding: 8px 16px;
+        outline: none;
+        border: none;
+        border-bottom: 1px solid #969696;
+        background-color: transparent; }
+      body #body #conversation #message-input button {
+        outline: none;
+        margin-left: 10px; }
+
+/*# sourceMappingURL=messenger.css.map */
