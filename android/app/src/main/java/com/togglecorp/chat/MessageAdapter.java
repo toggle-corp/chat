@@ -31,7 +31,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     public void onBindViewHolder(MessageViewHolder holder, int position) {
         Message msg = mMessages.get(position);
         DatabaseHelper helper = MainActivity.getDatabaseHelper(mContext);
-        holder.username.setText(msg.getOP(helper).full_name);
+        if (msg.getOP(helper) != null)
+            holder.username.setText(msg.getOP(helper).full_name);
         holder.time.setText(msg.getTime());
         holder.messageText.setText(msg.message);
     }

@@ -23,6 +23,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Clear all messages, except last few.
+        Message.deleteExcept(getDatabaseHelper(this), 20);
+
         // Send Fcm Token to server.
         FBInstanceIDService.sendTokenToServer(this);
 

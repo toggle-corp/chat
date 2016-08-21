@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block title %}Chat | Toggle Corp.{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/messenger.css' %}">
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/messenger.js' %}"></script>
+
+<script>
+    var conversationId = {{conversation.pk}};
+    var users = {
+    {% for user in users %}
+    {{user.pk}} : "{{user.first_name}} {{user.last_name}}",
+    {% endfor %}
+    };
+</script>
+
+{% endblock %}
+
+{% block body %}
+
+<nav id="navbar">
+    <div id="title"> {{ conversation.title }} </div>
+</nav>
+
+<section id="body">
+    <div id="conversation-list">
+    </div>
+    <div id="conversation">
+        <div id="message-input">
+            <div>
+                <input type="text" placeholder="Type your message" id="msg-input">
+                <button class="btn" id="send-btn">Send</button>
+            </div>
+        </div>
+        <div id="message-list">
+        </div>
+    </div>
+</section>
+
+<article id="message-template" class="message-template" hidden>
+    <author></author>
+    <time></time>
+    <p></p>
+</article>
+
+{% endblock %}

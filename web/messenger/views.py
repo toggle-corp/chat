@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import View
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -12,6 +12,19 @@ from chat.authenticate import *
 from messenger.models import *
 from messenger.cloud_messaging import *
 
+
+class MessengerView(View):
+    def get(self, request):
+        if not request.user.is_authenticated():
+            return redirect('index')
+
+        context = {}
+        context["conversation"] = Conversation.objects.get(pk=1)
+        context["users"] = User.objects.all()
+        return render(request, 'messenger/messenger.html', context)
+
+
+# API Views
 
 def get_conversation_data(conversation):
     return {
@@ -144,10 +157,10 @@ class MessageApiView(View):
         in_data = json.loads(request.body.decode('utf-8'))
 
         if "start_time" in in_data:
-            st = datetime.utcfromtimestamp(in_data["start_time"])
+            st = datetime.utcfromtimestamp(in_data["start_time"]/1000)
             messages = messages.filter(posted_at__gte=st)
         if "end_time" in in_data:
-            et = datetime.utcfromtimestamp(in_data["end_time"])
+            et = datetime.utcfromtimestamp(in_data["end_time"]/1000)
             messages = messages.filter(posted_at__lte=et)
         if "count" in in_data:
             messages = messages[:in_data["count"]]
@@ -174,7 +187,7 @@ class MessageAddApiView(View):
         message.conversation = conversation
 
         if "posted_at" in in_data:
-            pt = datetime.utcfromtimestamp(in_data["posted_at"])
+            pt = datetime.utcfromtimestamp(in_data["posted_at"]/1000)
             message.posted_at = pt
 
         else:

@@ -16,9 +16,13 @@
         <div id="toggle-logo">Toggle<span>Corp</span></div>
         <div id="app-name">Private chat</div>
     </header>
-    <form>
-        <input type="text" placeholder="Username">
-        <input type="password" placeholder="Password">
+    <form method="post">
+        {% csrf_token %}
+        {% if error %}
+        <div>{{ error }}</div>
+        {% endif %}
+        <input name="username" type="text" placeholder="Username" required>
+        <input name="password" type="password" placeholder="Password" required>
         <div id="submit-wrapper">
             <input type="submit" class="btn">
         </div>

@@ -4,15 +4,15 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import org.json.JSONObject;
 
 import java.util.Map;
 
@@ -31,9 +31,17 @@ public class FBMessagingService extends FirebaseMessagingService {
 
                 if (user != null) {
                     sendNotification(user.full_name, message.get("message"));
-
                     Intent intent = new Intent(MessengerFragment.BROADCAST_INTENT);
                     sendBroadcast(intent);
+
+                    // Add to database as well.
+                    Message m = new Message();
+                    m.id = Long.parseLong(message.get("pk"));
+                    m.conversation_id = Long.parseLong(message.get("conversation_id"));
+                    m.posted_at = Long.parseLong(message.get("posted_at"));
+                    m.posted_by = Long.parseLong(message.get("posted_by"));
+                    m.message = message.get("message");
+                    m.save(MainActivity.getDatabaseHelper(this));
                 }
             }
         }
