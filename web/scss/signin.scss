@@ -1,7 +1,24 @@
 @import "base";
 
+#bg-image-wrapper{
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: -1;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#bg-image{
+    overflow: none;
+    width: 100%;
+    -webkit-filter: blur(3px);
+}
+
 #login-form-wrapper{
     width: 600px;
+    opacity: 0.85;
     margin:100px auto;
     padding: 32px;
     background-color: #fff;
@@ -32,6 +49,7 @@
 
         input{
             margin-bottom: 32px;
+            font-size: 1.2em;
             outline: none;
             font-family: 'Roboto', sans-serif;
         }
