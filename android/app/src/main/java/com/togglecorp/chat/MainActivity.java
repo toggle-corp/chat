@@ -66,6 +66,10 @@ public class MainActivity extends AppCompatActivity {
         mNavigationView = (NavigationView)findViewById(R.id.navigation_view);
         mNavigationView.setNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
+        getFragmentManager().beginTransaction()
+                .replace(R.id.frame_content, new MessengerFragment())
+                .commit();
+
         ArrayList<NavigationDrawerItem> navigationDrawerItems = new ArrayList<>();
         navigationDrawerItems.add(new NavigationDrawerItem(NavigationDrawerItem.LABEL, "Conversations", null));
         navigationDrawerItems.add(new NavigationDrawerItem(NavigationDrawerItem.CONVERSATION, "Test Conversation 1", null));
