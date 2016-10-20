@@ -3,46 +3,51 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
+    <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view_messages"
-            android:scrollbars="vertical"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
+        android:layout_height="match_parent">
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_alignBottom="@+id/separator"
-            />
+            android:orientation="vertical">
 
-        <View
-            android:id="@+id/separator"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_alignTop="@+id/message_box"
-            />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/messages"
+                android:scrollbars="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.9"/>
 
-        <LinearLayout
-            android:id="@+id/message_box"
-            android:layout_alignParentBottom="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="1.0">
-            <EditText
-                android:id="@+id/edit_message"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.8"/>
-            <Button
-                android:id="@+id/send_message"
-                android:layout_width="0dp"
-                android:layout_weight="0.2"
-                android:layout_height="wrap_content"
-                android:text="send"/>
+            <RelativeLayout
+                android:id="@+id/message_box"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.1">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_alignParentTop="true"
+                    android:background="@color/colorBorder"/>
+                <EditText
+                    android:id="@+id/edit_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"/>
+                <ImageButton
+                    android:id="@+id/send_message"
+                    android:layout_width="@dimen/icon_lg"
+                    android:layout_height="@dimen/icon_lg"
+                    android:src="@drawable/ic_send"
+                    android:background="#00000000"
+                    android:layout_marginLeft="@dimen/layout_spacing_sm"
+                    android:layout_marginRight="@dimen/layout_spacing_sm"
+                    android:layout_marginBottom="@dimen/layout_spacing_sm"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:text="send"/>
+            </RelativeLayout>
         </LinearLayout>
-    </RelativeLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+
 </FrameLayout>
