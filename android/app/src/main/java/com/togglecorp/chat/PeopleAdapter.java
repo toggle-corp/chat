@@ -1,5 +1,6 @@
 package com.togglecorp.chat;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,15 +8,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
-/**
- * Created by fhx on 10/20/16.
- */
 public class PeopleAdapter extends RecyclerView.Adapter<PeopleAdapter.PeopleViewHolder> {
     private List<User> mUsers;
+    private Context mContext;
 
-    PeopleAdapter(List<User> users){
+    PeopleAdapter(Context context, List<User> users){
+        mContext = context;
         mUsers = users;
     }
 
@@ -30,8 +32,7 @@ public class PeopleAdapter extends RecyclerView.Adapter<PeopleAdapter.PeopleView
         User current = mUsers.get(position);
         holder.name.setText(current.displayName);
         holder.extra.setText(current.email);
-        // TODO: set avatar
-        //holder.avatar.setImageURI(current.photoUrl);
+        Picasso.with(mContext).load(current.photoUrl).into(holder.avatar);
     }
 
     @Override

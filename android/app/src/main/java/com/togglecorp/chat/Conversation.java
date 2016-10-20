@@ -14,6 +14,6 @@ public class Conversation {
         public Info() {}
     }
 
-    public Info info;
+    public Info info = new Info();
     public Map<String, Message> messages = new HashMap<>();
 }

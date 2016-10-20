@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -31,6 +32,7 @@ import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
+    private final static String TAG = "MainActivity";
 
     private static FirebaseDatabase mFbDb;
     public static DatabaseReference getDatabase() { return mFbDb.getReference(); }
@@ -39,7 +41,9 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
 
     private DrawerLayout mDrawerLayout;
-    private NavigationView mNavigationView;
+    private NavigationDrawerAdapter mNavAdapter;
+
+    private ArrayList<NavigationDrawerItem> mNavItems = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,32 +67,21 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize the nav drawer
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer);
-        mNavigationView = (NavigationView)findViewById(R.id.navigation_view);
-        mNavigationView.setNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        NavigationView navView = (NavigationView) findViewById(R.id.navigation_view);
 
         getFragmentManager().beginTransaction()
                 .replace(R.id.frame_content, new MessengerFragment())
                 .commit();
 
-        ArrayList<NavigationDrawerItem> navigationDrawerItems = new ArrayList<>();
-        navigationDrawerItems.add(new NavigationDrawerItem(NavigationDrawerItem.LABEL, "Conversations", null));
-        navigationDrawerItems.add(new NavigationDrawerItem(NavigationDrawerItem.CONVERSATION, "Test Conversation 1", null));
-        navigationDrawerItems.add(new NavigationDrawerItem(NavigationDrawerItem.CONVERSATION, "Test Conversation 2", null));
-        navigationDrawerItems.add(new NavigationDrawerItem(NavigationDrawerItem.CONVERSATION, "Test Conversation 3", null));
-        navigationDrawerItems.add(new NavigationDrawerItem(NavigationDrawerItem.DIVIDER, null, null));
-        navigationDrawerItems.add(new NavigationDrawerItem(NavigationDrawerItem.CONVERSATION, "Test Conversation A", null));
-        navigationDrawerItems.add(new NavigationDrawerItem(NavigationDrawerItem.CONVERSATION, "Test Conversation B", null));
-        final NavigationDrawerItemAdapter navigationDrawerItemAdapter =
-                new NavigationDrawerItemAdapter(this, navigationDrawerItems);
-
-        RecyclerView recyclerView = (RecyclerView) mNavigationView
+        mNavAdapter = new NavigationDrawerAdapter(this, mNavItems, mNavListener);
+        RecyclerView recyclerView = (RecyclerView) navView
                 .findViewById(R.id.navigation_drawer_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(navigationDrawerItemAdapter);
+        recyclerView.setAdapter(mNavAdapter);
 
 
         // Set the nav drawer header
-        View header = mNavigationView.findViewById(R.id.navigation_drawer_header);
+        View header = navView.findViewById(R.id.navigation_drawer_header);
         ((TextView)header.findViewById(R.id.username)).setText(mAuthUser.getFbUser().getDisplayName());
         ((TextView)header.findViewById(R.id.extra)).setText(mAuthUser.getFbUser().getEmail());
         Picasso.with(this)
@@ -106,21 +99,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // The hamburger icon
-        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
+        ActionBarDrawerToggle drawerListener = new ActionBarDrawerToggle(this, mDrawerLayout,
                 toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
         };
-        mDrawerLayout.addDrawerListener(mDrawerToggle);
-        mDrawerToggle.syncState();
+        mDrawerLayout.addDrawerListener(drawerListener);
+        drawerListener.syncState();
     }
-
-
-    private NavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new NavigationView.OnNavigationItemSelectedListener() {
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            mDrawerLayout.closeDrawers();
-            return true;
-        }
-    };
 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -132,10 +116,42 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private final int ADD_NEW_CONVERSATION = -100;
+    private void refreshNavItems() {
+        mNavItems.clear();
+
+        mNavItems.add(new NavigationDrawerItem(NavigationDrawerItem.LABEL,
+                "Conversations", null, 0));
+        mNavItems.add(new NavigationDrawerItem(
+                getDrawable(R.drawable.ic_add), NavigationDrawerItem.ITEM,
+                "Add new", ADD_NEW_CONVERSATION));
+
+        Database db = Database.get();
+
+
+//        mNavItems.add(new NavigationDrawerItem(NavigationDrawerItem.DIVIDER, null, null));
+//        mNavItems.add(new NavigationDrawerItem(
+//                NavigationDrawerItem.ITEM, "Test Conversation A", null));
+//        mNavItems.add(new NavigationDrawerItem(
+//                NavigationDrawerItem.ITEM, "Test Conversation B", null));
+        mNavAdapter.notifyDataSetChanged();
+    }
+
+    private NavigationListener mNavListener = new NavigationListener() {
+        @Override
+        public void onClick(int id) {
+            if (id == ADD_NEW_CONVERSATION) {
+                mDrawerLayout.closeDrawers();
+                startActivity(new Intent(MainActivity.this, AddConversationActivity.class));
+            }
+        }
+    };
+
     @Override
     public void onStart() {
         super.onStart();
         startSync();
+        refreshNavItems();
     }
 
     @Override
@@ -166,12 +182,12 @@ public class MainActivity extends AppCompatActivity {
                         if (!child.getKey().equals(mAuthUser.getFbUser().getUid()))
                             Database.get().users.put(child.getKey(), child.getValue(User.class));
 
-                        // For self, read conversations
+                        // For self, read conversations (or at least the titles)
                         else {
                             for (DataSnapshot conversation:
                                     child.child("conversations").getChildren()) {
-                                String id = conversation.getKey();
-                                getConversation(id);
+                                Database.get().getConversation(conversation.getKey()).info.title =
+                                        conversation.getValue(String.class);
                             }
                         }
                     }
@@ -184,31 +200,6 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         addListener(mDatabase.child("users"), usersListener);
-    }
-
-    public void getConversation(final String id) {
-        // Conversation messages are received in messenger fragment.
-        // However here, we get just the basic conversation info, including the title.
-        ValueEventListener infoListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot == null || !dataSnapshot.exists())
-                    return;
-                Database.get().getConversation(id).info
-                        = dataSnapshot.getValue(Conversation.Info.class);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-
-        // Note that this is a nested listener, called each time user info updates
-        // so only use single time listener.
-        mDatabase.child("conversations").child(id).child("info")
-                .addListenerForSingleValueEvent(infoListener);
-
     }
 
     private void stopSync() {
