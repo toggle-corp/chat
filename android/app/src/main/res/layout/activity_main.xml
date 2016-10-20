@@ -29,8 +29,20 @@
         android:id="@+id/navigation_view"
         android:layout_height="match_parent"
         android:layout_width="wrap_content"
-        android:layout_gravity="start"
-        app:headerLayout="@layout/layout_nav_header"
-        app:menu="@menu/drawer"/>
+        android:layout_gravity="start" >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <include layout="@layout/layout_navigation_drawer_header"
+                android:id="@+id/navigation_drawer_header"/>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/navigation_drawer_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            </android.support.v7.widget.RecyclerView>
+        </LinearLayout>
+
+    </android.support.design.widget.NavigationView>
 
 </android.support.v4.widget.DrawerLayout>
