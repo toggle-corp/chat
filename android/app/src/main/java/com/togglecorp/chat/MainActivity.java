@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(navigationDrawerItemAdapter);
 
+
         // Set the nav drawer header
         View header = mNavigationView.findViewById(R.id.navigation_drawer_header);
         ((TextView)header.findViewById(R.id.username)).setText(mAuthUser.getFbUser().getDisplayName());

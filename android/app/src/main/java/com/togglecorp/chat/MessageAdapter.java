@@ -16,55 +16,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     MessageAdapter(){
 //        mMessages = new ArrayList<>();
 //        mMessages.add(new Message("bla bla bla", "Frozen Helium", "12:23"));
-//        mMessages.add(new Message("bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla", "Frozen Helium", "12:23"));
-//        mMessages.add(new Message("bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla", "Bibek Dahal", "12:24"));
-//        mMessages.add(new Message("asdf asdf asdf asdfefwdfw wdefwdf dwf", "Aditya Khatri", "12:23"));
-//        mMessages.add(new Message("bla bla bla", "Frozen Helium", "12:23"));
-//        mMessages.add(new Message("bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla", "Frozen Helium", "12:23"));
-//        mMessages.add(new Message("bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla", "Bibek Dahal", "12:24"));
-//        mMessages.add(new Message("asdf asdf asdf asdfefwdfw wdefwdf dwf", "Aditya Khatri", "12:23"));
-//        mMessages.add(new Message("bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla", "Bibek Dahal", "12:24"));
-//        mMessages.add(new Message("asdf asdf asdf asdfefwdfw wdefwdf dwf", "Aditya Khatri", "12:23"));
-//        mMessages.add(new Message("bla bla bla", "Frozen Helium", "12:23"));
-//        mMessages.add(new Message("bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla", "Frozen Helium", "12:23"));
-//        mMessages.add(new Message("bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla", "Bibek Dahal", "12:24"));
-//        mMessages.add(new Message("asdf asdf asdf asdfefwdfw wdefwdf dwf", "Aditya Khatri", "12:23"));
-//        mMessages.add(new Message("bla bla bla", "Frozen Helium", "12:23"));
-//        mMessages.add(new Message("bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla", "Frozen Helium", "12:23"));
-//        mMessages.add(new Message("bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla", "Bibek Dahal", "12:24"));
-//        mMessages.add(new Message("asdf asdf asdf asdfefwdfw wdefwdf dwf", "Aditya Khatri", "12:23"));
-//        mMessages.add(new Message("bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla", "Bibek Dahal", "12:24"));
-//        mMessages.add(new Message("asdf asdf asdf asdfefwdfw wdefwdf dwf", "Aditya Khatri", "12:23"));
-//        mMessages.add(new Message("bla bla bla", "Frozen Helium", "12:23"));
-//        mMessages.add(new Message("asdf asdf asdf asdfefwdfw wdefwdf dwf", "Aditya Khatri", "12:23"));
-//        mMessages.add(new Message("bla bla bla", "Frozen Helium", "12:23"));
-//        mMessages.add(new Message("bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla", "Frozen Helium", "12:23"));
-//        mMessages.add(new Message("bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla", "Bibek Dahal", "12:24"));
-//        mMessages.add(new Message("asdf asdf asdf asdfefwdfw wdefwdf dwf", "Aditya Khatri", "12:23"));
-//        mMessages.add(new Message("bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla", "Bibek Dahal", "12:24"));
-//        mMessages.add(new Message("asdf asdf asdf asdfefwdfw wdefwdf dwf", "Aditya Khatri", "12:23"));
-//        mMessages.add(new Message("bla bla bla", "Frozen Helium", "12:23"));
-//        mMessages.add(new Message("bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla", "Bibek Dahal", "12:24"));
-//        mMessages.add(new Message("asdf asdf asdf asdfefwdfw wdefwdf dwf", "Aditya Khatri", "12:23"));
-//        mMessages.add(new Message("bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla", "Bibek Dahal", "12:24"));
-//        mMessages.add(new Message("asdf asdf asdf asdfefwdfw wdefwdf dwf", "Aditya Khatri", "12:23"));
-//        mMessages.add(new Message("bla bla bla", "Frozen Helium", "12:23"));
-//        mMessages.add(new Message("bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla", "Frozen Helium", "12:23"));
-//        mMessages.add(new Message("bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla", "Bibek Dahal", "12:24"));
-//        mMessages.add(new Message("asdf asdf asdf asdfefwdfw wdefwdf dwf", "Aditya Khatri", "12:23"));
-//        mMessages.add(new Message("bla bla bla", "Frozen Helium", "12:23"));
-//        mMessages.add(new Message("bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla", "Frozen Helium", "12:23"));
-//        mMessages.add(new Message("bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla", "Bibek Dahal", "12:24"));
-//        mMessages.add(new Message("asdf asdf asdf asdfefwdfw wdefwdf dwf", "Aditya Khatri", "12:23"));
-//        mMessages.add(new Message("bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla", "Bibek Dahal", "12:24"));
-//        mMessages.add(new Message("asdf asdf asdf asdfefwdfw wdefwdf dwf", "Aditya Khatri", "12:23"));
-//        mMessages.add(new Message("bla bla bla", "Frozen Helium", "12:23"));
-//        mMessages.add(new Message("asdf asdf asdf asdfefwdfw wdefwdf dwf", "Aditya Khatri", "12:23"));
-//        mMessages.add(new Message("bla bla bla", "Frozen Helium", "12:23"));
-//        mMessages.add(new Message("bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla", "Frozen Helium", "12:23"));
-//        mMessages.add(new Message("bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla", "Bibek Dahal", "12:24"));
-//        mMessages.add(new Message("asdf asdf asdf asdfefwdfw wdefwdf dwf", "Aditya Khatri", "12:23"));
-//        mMessages.add(new Message("bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla", "Bibek Dahal", "12:24"));
+
     }
 
     public void setMessages(List<Message> messages){
