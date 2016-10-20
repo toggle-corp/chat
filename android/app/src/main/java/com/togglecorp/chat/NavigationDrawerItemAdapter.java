@@ -8,15 +8,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
-/**
- * Created by fhx on 10/19/16.
- */
 public class NavigationDrawerItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<NavigationDrawerItem> mItems;
+    private Context mContext;
 
-    NavigationDrawerItemAdapter(List<NavigationDrawerItem> items){
+    NavigationDrawerItemAdapter(Context context, List<NavigationDrawerItem> items){
+        mContext = context;
         mItems = items;
     }
 
@@ -56,7 +57,8 @@ public class NavigationDrawerItemAdapter extends RecyclerView.Adapter<RecyclerVi
             case NavigationDrawerItem.CONVERSATION:
                 NavigationDrawerItemViewHolder viewHolder = (NavigationDrawerItemViewHolder)holder;
                 viewHolder.text.setText(item.getText());
-                // TODO: Add avatar too
+                if (item.getPhotoUrl() != null)
+                    Picasso.with(mContext).load(item.getPhotoUrl()).into(viewHolder.icon);
                 break;
             case NavigationDrawerItem.LABEL:
                 ((NavigationDrawerLabelViewHolder)holder).text.setText(item.getText());

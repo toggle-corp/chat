@@ -1,7 +1,9 @@
 package com.togglecorp.chat;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Conversation {
 
@@ -12,16 +14,6 @@ public class Conversation {
         public Info() {}
     }
 
-    public static class Message {
-        public String sender;
-        public String message;
-        public long time_sent;
-        public long time_delivered;
-        public int status;
-
-        public Message() {};
-    }
-
     public Info info;
-    public List<Message> messages = new ArrayList<>();
+    public Map<String, Message> messages = new HashMap<>();
 }

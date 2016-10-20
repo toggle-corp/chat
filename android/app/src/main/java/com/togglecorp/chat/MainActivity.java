@@ -26,7 +26,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -34,6 +33,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MainActivity extends AppCompatActivity {
 
     private static FirebaseDatabase mFbDb;
+    public static DatabaseReference getDatabase() { return mFbDb.getReference(); }
 
     private AuthUser mAuthUser;
     private DatabaseReference mDatabase;
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
             mFbDb = FirebaseDatabase.getInstance();
             mFbDb.setPersistenceEnabled(true);
         }
-        mDatabase = mFbDb.getReference();
+        mDatabase = getDatabase();
 
         // Get logged in user or start Login Activity
         mAuthUser = new AuthUser(this);
@@ -78,7 +78,8 @@ public class MainActivity extends AppCompatActivity {
         navigationDrawerItems.add(new NavigationDrawerItem(NavigationDrawerItem.DIVIDER, null, null));
         navigationDrawerItems.add(new NavigationDrawerItem(NavigationDrawerItem.CONVERSATION, "Test Conversation A", null));
         navigationDrawerItems.add(new NavigationDrawerItem(NavigationDrawerItem.CONVERSATION, "Test Conversation B", null));
-        final NavigationDrawerItemAdapter navigationDrawerItemAdapter = new NavigationDrawerItemAdapter(navigationDrawerItems);
+        final NavigationDrawerItemAdapter navigationDrawerItemAdapter =
+                new NavigationDrawerItemAdapter(this, navigationDrawerItems);
 
         RecyclerView recyclerView = (RecyclerView) mNavigationView
                 .findViewById(R.id.navigation_drawer_recycler_view);
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(navigationDrawerItemAdapter);
 
         // Set the nav drawer header
-        View header = mNavigationView.getHeaderView(0);
+        View header = mNavigationView.findViewById(R.id.navigation_drawer_header);
         ((TextView)header.findViewById(R.id.username)).setText(mAuthUser.getFbUser().getDisplayName());
         ((TextView)header.findViewById(R.id.extra)).setText(mAuthUser.getFbUser().getEmail());
         Picasso.with(this)
@@ -109,9 +110,6 @@ public class MainActivity extends AppCompatActivity {
         };
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
-
-        // Start syncing
-        startSync();
     }
 
 
@@ -134,20 +132,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        startSync();
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         stopSync();
     }
-
 
     private Map<Query, ValueEventListener> mListeners = new HashMap<>();
     private void addListener(Query ref, ValueEventListener listener) {
         ref.addValueEventListener(listener);
         mListeners.put(ref, listener);
     }
-
-    private HashMap<String, User> mUsers = new HashMap<>();
-    private HashMap<String, Conversation> mConversations = new HashMap<>();
 
     private void startSync() {
         // Store self
@@ -163,14 +163,14 @@ public class MainActivity extends AppCompatActivity {
 
                         // All except self
                         if (!child.getKey().equals(mAuthUser.getFbUser().getUid()))
-                            mUsers.put(child.getKey(), child.getValue(User.class));
+                            Database.get().users.put(child.getKey(), child.getValue(User.class));
 
                         // For self, read conversations
                         else {
                             for (DataSnapshot conversation:
                                     child.child("conversations").getChildren()) {
-
-                                getConversation(conversation.getKey());
+                                String id = conversation.getKey();
+                                getConversation(id);
                             }
                         }
                     }
@@ -182,18 +182,19 @@ public class MainActivity extends AppCompatActivity {
 
             }
         };
-
         addListener(mDatabase.child("users"), usersListener);
     }
 
-    public void getConversation(String conversationId) {
-        final Conversation conversation = new Conversation();
-        mConversations.put(conversationId, conversation);
-
+    public void getConversation(final String id) {
+        // Conversation messages are received in messenger fragment.
+        // However here, we get just the basic conversation info, including the title.
         ValueEventListener infoListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
+                if (dataSnapshot == null || !dataSnapshot.exists())
+                    return;
+                Database.get().getConversation(id).info
+                        = dataSnapshot.getValue(Conversation.Info.class);
             }
 
             @Override
@@ -201,23 +202,11 @@ public class MainActivity extends AppCompatActivity {
 
             }
         };
-        addListener(mDatabase.child("conversations").child(conversationId).child("info"),
-                infoListener);
 
-        ValueEventListener messagesListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-        addListener(mDatabase.child("conversations").child(conversationId)
-                .child("messages").orderByChild("time_sent").limitToLast(30),
-                messagesListener);
+        // Note that this is a nested listener, called each time user info updates
+        // so only use single time listener.
+        mDatabase.child("conversations").child(id).child("info")
+                .addListenerForSingleValueEvent(infoListener);
 
     }
 
