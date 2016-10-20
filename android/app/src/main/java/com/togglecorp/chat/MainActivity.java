@@ -9,6 +9,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -63,6 +65,21 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer);
         mNavigationView = (NavigationView)findViewById(R.id.navigation_view);
         mNavigationView.setNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        ArrayList<NavigationDrawerItem> navigationDrawerItems = new ArrayList<>();
+        navigationDrawerItems.add(new NavigationDrawerItem(NavigationDrawerItem.LABEL, "Conversations", null));
+        navigationDrawerItems.add(new NavigationDrawerItem(NavigationDrawerItem.CONVERSATION, "Test Conversation 1", null));
+        navigationDrawerItems.add(new NavigationDrawerItem(NavigationDrawerItem.CONVERSATION, "Test Conversation 2", null));
+        navigationDrawerItems.add(new NavigationDrawerItem(NavigationDrawerItem.CONVERSATION, "Test Conversation 3", null));
+        navigationDrawerItems.add(new NavigationDrawerItem(NavigationDrawerItem.DIVIDER, null, null));
+        navigationDrawerItems.add(new NavigationDrawerItem(NavigationDrawerItem.CONVERSATION, "Test Conversation A", null));
+        navigationDrawerItems.add(new NavigationDrawerItem(NavigationDrawerItem.CONVERSATION, "Test Conversation B", null));
+        final NavigationDrawerItemAdapter navigationDrawerItemAdapter = new NavigationDrawerItemAdapter(navigationDrawerItems);
+
+        RecyclerView recyclerView = (RecyclerView) mNavigationView
+                .findViewById(R.id.navigation_drawer_recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(navigationDrawerItemAdapter);
 
         // Set the nav drawer header
         View header = mNavigationView.getHeaderView(0);
