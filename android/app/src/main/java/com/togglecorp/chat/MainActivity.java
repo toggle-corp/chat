@@ -12,36 +12,47 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private User mUser;
-    private static FirebaseDatabase mFDb;
+    private static FirebaseDatabase mFbDb;
+
+    private AuthUser mAuthUser;
+    private DatabaseReference mDatabase;
 
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (mFDb == null) {
-            mFDb = FirebaseDatabase.getInstance();
-            mFDb.setPersistenceEnabled(true);
+        if (mFbDb == null) {
+            mFbDb = FirebaseDatabase.getInstance();
+            mFbDb.setPersistenceEnabled(true);
         }
+        mDatabase = mFbDb.getReference();
 
         // Get logged in user or start Login Activity
-        mUser = new User(this);
-        if (mUser.getUser() == null) {
+        mAuthUser = new AuthUser(this);
+        if (mAuthUser.getFbUser() == null) {
             // Not signed in, launch the Log In activity
             startActivity(new Intent(this, LoginActivity.class));
             finish();
@@ -55,10 +66,10 @@ public class MainActivity extends AppCompatActivity {
 
         // Set the nav drawer header
         View header = mNavigationView.getHeaderView(0);
-        ((TextView)header.findViewById(R.id.username)).setText(mUser.getUser().getDisplayName());
-        ((TextView)header.findViewById(R.id.extra)).setText(mUser.getUser().getEmail());
+        ((TextView)header.findViewById(R.id.username)).setText(mAuthUser.getFbUser().getDisplayName());
+        ((TextView)header.findViewById(R.id.extra)).setText(mAuthUser.getFbUser().getEmail());
         Picasso.with(this)
-                .load(mUser.getUser().getPhotoUrl())
+                .load(mAuthUser.getFbUser().getPhotoUrl())
                 .into((CircleImageView)header.findViewById(R.id.avatar));
 
         // Initialize the toolbar
@@ -77,6 +88,9 @@ public class MainActivity extends AppCompatActivity {
         };
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
+
+        // Start syncing
+        startSync();
     }
 
 
@@ -96,5 +110,100 @@ public class MainActivity extends AppCompatActivity {
 
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        stopSync();
+    }
+
+
+    private Map<Query, ValueEventListener> mListeners = new HashMap<>();
+    private void addListener(Query ref, ValueEventListener listener) {
+        ref.addValueEventListener(listener);
+        mListeners.put(ref, listener);
+    }
+
+    private HashMap<String, User> mUsers = new HashMap<>();
+    private HashMap<String, Conversation> mConversations = new HashMap<>();
+
+    private void startSync() {
+        // Store self
+        mDatabase.child("users").child(mAuthUser.getFbUser().getUid())
+                .setValue(mAuthUser.getUser());
+
+        // Fetch others
+        ValueEventListener usersListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot != null && dataSnapshot.exists()) {
+                    for (DataSnapshot child: dataSnapshot.getChildren()) {
+
+                        // All except self
+                        if (!child.getKey().equals(mAuthUser.getFbUser().getUid()))
+                            mUsers.put(child.getKey(), child.getValue(User.class));
+
+                        // For self, read conversations
+                        else {
+                            for (DataSnapshot conversation:
+                                    child.child("conversations").getChildren()) {
+
+                                getConversation(conversation.getKey());
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+        addListener(mDatabase.child("users"), usersListener);
+    }
+
+    public void getConversation(String conversationId) {
+        final Conversation conversation = new Conversation();
+        mConversations.put(conversationId, conversation);
+
+        ValueEventListener infoListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        addListener(mDatabase.child("conversations").child(conversationId).child("info"),
+                infoListener);
+
+        ValueEventListener messagesListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        addListener(mDatabase.child("conversations").child(conversationId)
+                .child("messages").orderByChild("time_sent").limitToLast(30),
+                messagesListener);
+
+    }
+
+    private void stopSync() {
+        for (Map.Entry<Query, ValueEventListener> listener: mListeners.entrySet()) {
+            listener.getKey().removeEventListener(listener.getValue());
+        }
+        mListeners.clear();
     }
 }
