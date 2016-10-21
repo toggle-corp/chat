@@ -3,6 +3,8 @@ package com.togglecorp.chat;
 import java.util.HashMap;
 
 public class Database {
+    public String selfId;
+
     private Database() {}
     private static Database mDatabase;
 

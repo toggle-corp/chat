@@ -12,19 +12,22 @@ public class NavigationDrawerItem {
     private String mPhotoUrl = null;
     private Drawable mIcon = null;
     private int mId;
+    private boolean mSelected;
 
-    NavigationDrawerItem(int type, String text, String photoUrl, int id){
+    NavigationDrawerItem(int type, String text, String photoUrl, int id, boolean selected){
         mType = type;
         mText = text;
         mPhotoUrl = photoUrl;
         mId = id;
+        mSelected = selected;
     }
 
-    NavigationDrawerItem(Drawable icon, int type, String text, int id){
+    NavigationDrawerItem(Drawable icon, int type, String text, int id, boolean selected){
         mType = type;
         mText = text;
         mIcon = icon;
         mId = id;
+        mSelected = selected;
     }
 
     public String getText(){
@@ -38,4 +41,5 @@ public class NavigationDrawerItem {
     }
     public Drawable getIcon() { return mIcon; }
     public int getId() { return mId; }
+    public boolean isSelected() { return mSelected; }
 }

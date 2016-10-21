@@ -9,17 +9,27 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PeopleAdapter extends RecyclerView.Adapter<PeopleAdapter.PeopleViewHolder> {
-    private List<User> mUsers;
+    private List<Map.Entry<String, User>> mUsers = new ArrayList<>();
+    private List<String> mSelected = new ArrayList<>();
+
     private Context mContext;
 
-    PeopleAdapter(Context context, List<User> users){
+    PeopleAdapter(Context context,  Set<Map.Entry<String, User>> users){
         mContext = context;
-        mUsers = users;
+        mUsers.clear();
+        mUsers.addAll(users);
+    }
+
+    public List<String> getSelected() {
+        return mSelected;
     }
 
     @Override
@@ -30,9 +40,10 @@ public class PeopleAdapter extends RecyclerView.Adapter<PeopleAdapter.PeopleView
 
     @Override
     public void onBindViewHolder(PeopleViewHolder holder, int position) {
-        User current = mUsers.get(position);
+        User current = mUsers.get(position).getValue();
         holder.name.setText(current.displayName);
         holder.extra.setText(current.email);
+        holder.id = mUsers.get(position).getKey();
         Picasso.with(mContext).load(current.photoUrl).into(holder.avatar);
     }
 
@@ -45,6 +56,7 @@ public class PeopleAdapter extends RecyclerView.Adapter<PeopleAdapter.PeopleView
         protected TextView name;
         protected TextView extra;
         protected CircleImageView avatar;
+        protected String id;
 
         PeopleViewHolder(View v){
             super(v);
@@ -57,11 +69,12 @@ public class PeopleAdapter extends RecyclerView.Adapter<PeopleAdapter.PeopleView
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(view.isSelected()) {
-                        view.setSelected(false);
-                    } else {
-                        view.setSelected(true);
-                    }
+                    if (view.isSelected())
+                        mSelected.remove(id);
+                    else
+                        mSelected.add(id);
+
+                    view.setSelected(!view.isSelected());
                 }
             });
         }

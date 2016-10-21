@@ -13,10 +13,7 @@ import java.util.List;
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
     private List<Message> mMessages = new ArrayList<>();
 
-    MessageAdapter(){
-//        mMessages = new ArrayList<>();
-//        mMessages.add(new Message("bla bla bla", "Frozen Helium", "12:23"));
-
+    MessageAdapter() {
     }
 
     public void setMessages(List<Message> messages){
@@ -33,7 +30,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     @Override
     public void onBindViewHolder(MessageViewHolder holder, int position) {
         Message current = mMessages.get(position);
-        holder.sender.setText(current.sender);
+        if (Database.get().selfId.equals(current.sender))
+            holder.sender.setText("Me");
+        else if (Database.get().users.containsKey(current.sender))
+            holder.sender.setText(Database.get().users.get(current.sender).displayName);
+        else
+            holder.sender.setText("Unknown");
         holder.time.setText(new Date(current.time_sent).toString());
         holder.text.setText(current.text);
     }
