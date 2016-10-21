@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -108,6 +109,12 @@ public class MainActivity extends AppCompatActivity {
         };
         mDrawerLayout.addDrawerListener(drawerListener);
         drawerListener.syncState();
+
+        // Get active conversation
+        if (getIntent().hasExtra("active_conversation")) {
+            changeConversation(getIntent().getStringExtra("active_conversation"));
+            getIntent().removeExtra("active_conversation");
+        }
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -169,14 +176,18 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, AddConversationActivity.class));
             } else if (mNavConversationIds.containsKey(id)) {
                 mDrawerLayout.closeDrawers();
-                mActiveConversation = mNavConversationIds.get(id);
-                mDatabase.child("users").child(mAuthUser.getFbUser().getUid())
-                        .child("active_conversation").setValue(mActiveConversation);
-                mMessengerFragment.setConversation(mActiveConversation);
+                changeConversation(mNavConversationIds.get(id));
             } else
                 mDrawerLayout.closeDrawers();
         }
     };
+
+    private void changeConversation(String id) {
+        mActiveConversation = id;
+        mDatabase.child("users").child(mAuthUser.getFbUser().getUid())
+                .child("active_conversation").setValue(mActiveConversation);
+        mMessengerFragment.setConversation(mActiveConversation);
+    }
 
     @Override
     public void onStart() {
@@ -247,5 +258,14 @@ public class MainActivity extends AppCompatActivity {
             listener.getKey().removeEventListener(listener.getValue());
         }
         mListeners.clear();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getIntent().hasExtra("active_conversation")) {
+            changeConversation(getIntent().getStringExtra("active_conversation"));
+            getIntent().removeExtra("active_conversation");
+        }
     }
 }

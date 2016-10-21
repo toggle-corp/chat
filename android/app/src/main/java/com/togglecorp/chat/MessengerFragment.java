@@ -123,12 +123,8 @@ public class MessengerFragment extends Fragment {
             }
         }
 
-        try {
-            FCMServer.pushNotification(Database.get().self.displayName,
-                    message.text, tokens);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        new FCMServer.PushNotificationTask(Database.get().self.displayName,
+                    message.text, mConversationId, tokens).execute();
     }
 
     @Override

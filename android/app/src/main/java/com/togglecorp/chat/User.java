@@ -8,7 +8,7 @@ public class User {
     public String displayName;
     public String email;
     public String photoUrl;
-    public HashMap<String, String> mTokens = new HashMap<>();
+    public HashMap<String, String> tokens = new HashMap<>();
 
     public User() {}
 
@@ -19,9 +19,9 @@ public class User {
     }
 
     public List<String> getTokens() {
-        if (mTokens == null)
+        if (tokens == null)
             return new ArrayList<>();
 
-        return new ArrayList<>(mTokens.values());
+        return new ArrayList<>(tokens.values());
     }
 }

@@ -19,14 +19,16 @@ public class FCMMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         if (remoteMessage.getData().size() > 0) {
             Map<String, String> message = remoteMessage.getData();
-            sendNotification(message.get("title"), message.get("body"));
+            sendNotification(message.get("title"), message.get("body"),
+                    message.get("conversation"));
         }
 
     }
 
-    private void sendNotification(String title, String messageBody) {
+    private void sendNotification(String title, String messageBody, String conversation) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("active_conversation", conversation);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 

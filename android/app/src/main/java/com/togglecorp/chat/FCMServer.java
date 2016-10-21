@@ -1,5 +1,6 @@
 package com.togglecorp.chat;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -16,10 +17,36 @@ public class FCMServer {
     public final static String AUTH_KEY_FCM = "AIzaSyD7e2QASMUE1Wnc1rzkxJR5dUtWduMCvnk";
     public final static String API_URL_FCM = "https://fcm.googleapis.com/fcm/send";
 
-    public static void pushNotification(String title, String body,
+    public static class PushNotificationTask extends AsyncTask<Void, Void, Void> {
+        private String mTitle, mBody, mConversation;
+        private List<String> mTokens;
+
+        public PushNotificationTask(String title, String body, String conversation,
+                                    List<String> tokens) {
+            mTitle = title;
+            mBody = body;
+            mTokens = tokens;
+            mConversation = conversation;
+        }
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                pushNotification(mTitle, mBody, mConversation, mTokens);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    private static void pushNotification(String title, String body, String conversation,
                                            List<String> tokens) throws Exception {
+
+        Log.d(TAG, "Sending notifications");
         if (tokens.size() == 0)
             return;
+        Log.d(TAG, "Sending notifications");
 
         String authKey = AUTH_KEY_FCM;
         String FMCurl = API_URL_FCM;
@@ -40,6 +67,7 @@ public class FCMServer {
         JSONObject info = new JSONObject();
         info.put("title", title);
         info.put("body", body);
+        info.put("conversation", conversation);
         data.put("data", info);
 
         OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
