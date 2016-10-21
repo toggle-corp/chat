@@ -32,24 +32,26 @@ public class MessengerFragment extends Fragment {
     private boolean mStarted = false;
     private List<Message> mMessages = new ArrayList<>();
     private MessageAdapter mMessageAdapter;
+    private RecyclerView mRecyclerView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_messenger, container, false);
 
-        RecyclerView recyclerView = (RecyclerView)root.findViewById(R.id.messages);
+        mRecyclerView = (RecyclerView)root.findViewById(R.id.messages);
         LinearLayoutManager layoutManager = new LinearLayoutManager(container.getContext());
-        recyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setLayoutManager(layoutManager);
 
         mMessageAdapter = new MessageAdapter();
         mMessageAdapter.setMessages(mMessages);
-        recyclerView.setAdapter(mMessageAdapter);
+        mRecyclerView.setAdapter(mMessageAdapter);
 
         mDatabase = MainActivity.getDatabase();
         layoutManager.setStackFromEnd(true);
         return root;
     }
 
+    boolean mScrollToEnd = false;
     private void refreshMessages() {
         if (mConversationId == null || mConversationId.length() == 0) {
             getActivity().findViewById(R.id.message_box).setVisibility(View.GONE);
@@ -59,7 +61,7 @@ public class MessengerFragment extends Fragment {
         getActivity().findViewById(R.id.send_message).setOnClickListener(mSendListener);
 
         Conversation conversation = Database.get().getConversation(mConversationId);
-        getActivity().setTitle(conversation.info.getTitle());
+        getActivity().setTitle(conversation.info.getTitle().toUpperCase());
 
         mMessages.clear();
         for (HashMap.Entry<String, Message> entry: conversation.messages.entrySet()) {
@@ -69,10 +71,14 @@ public class MessengerFragment extends Fragment {
         Collections.sort(mMessages, new Comparator<Message>() {
             @Override
             public int compare(Message m1, Message m2) {
-                return Long.valueOf(m1.time_sent).compareTo(Long.valueOf(m2.time_sent));
+                return Long.valueOf(m1.time_sent).compareTo(m2.time_sent);
             }
         });
         mMessageAdapter.notifyDataSetChanged();
+
+        if (mScrollToEnd)
+            mRecyclerView.smoothScrollToPosition(mMessages.size());
+        mScrollToEnd = false;
     }
 
     private View.OnClickListener mSendListener = new View.OnClickListener() {
@@ -95,6 +101,7 @@ public class MessengerFragment extends Fragment {
                 DatabaseReference newMessage = mDatabase.child("conversations")
                         .child(mConversationId).child("messages").push();
                 newMessage.setValue(message);
+                mScrollToEnd = true;
             }
         }
     };

@@ -133,10 +133,9 @@ public class MainActivity extends AppCompatActivity {
         Database db = Database.get();
         int i = 0;
         for (HashMap.Entry<String, Conversation> entry: db.conversations.entrySet()) {
-            String title;
-            String photoUrl = null;
-
             Conversation.Info info = entry.getValue().info;
+
+            String photoUrl = null;
             if (info.users.size() == 2) {
                 if (info.users.get(0).equals(mAuthUser.getFbUser().getUid())) {
                     photoUrl = db.users.get(info.users.get(1)).photoUrl;
@@ -145,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
                     photoUrl = db.users.get(info.users.get(0)).photoUrl;
                 }
             }
-            title = info.getTitle();
+            String title = info.getTitle().toUpperCase();
 
             mNavItems.add(new NavigationDrawerItem(
                     NavigationDrawerItem.ITEM,
