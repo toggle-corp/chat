@@ -30,22 +30,26 @@
                 <!--android:layout_width="match_parent"-->
                 <!--android:layout_height="2dp"-->
                 <!--android:background="@color/colorBorder"/>-->
-            <EditText
-                android:id="@+id/edit_message"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.8"
-                android:inputType="textCapSentences|textAutoComplete|textMultiLine"/>
+
             <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.2">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/edit_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/layout_spacing_md"
+                    android:layout_marginLeft="@dimen/layout_spacing_md"
+                    android:padding="@dimen/layout_spacing_md"
+                    android:paddingRight="@dimen/icon_xl"
+                    android:inputType="textCapSentences|textAutoComplete|textMultiLine"/>
                 <ImageButton
                     android:id="@+id/send_message"
                     android:layout_width="@dimen/icon_lg"
                     android:layout_height="@dimen/icon_lg"
                     android:src="@drawable/ic_send"
                     android:background="#00000000"
+                    android:layout_alignParentRight="true"
                     android:layout_marginLeft="@dimen/layout_spacing_sm"
                     android:layout_marginRight="@dimen/layout_spacing_sm"
                     android:layout_marginBottom="@dimen/layout_spacing_sm"
