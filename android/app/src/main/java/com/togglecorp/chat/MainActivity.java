@@ -66,8 +66,10 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         Database.get().selfId = mAuthUser.getFbUser().getUid();
+        Database.get().self = mAuthUser.getUser();
+        FCMInstanceIDService.sendTokenToServer(this);
 
-                // Initialize the nav drawer
+        // Initialize the nav drawer
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer);
         NavigationView navView = (NavigationView) findViewById(R.id.navigation_view);
 
@@ -210,8 +212,9 @@ public class MainActivity extends AppCompatActivity {
                     for (DataSnapshot child: dataSnapshot.getChildren()) {
 
                         // All except self
-                        if (!child.getKey().equals(mAuthUser.getFbUser().getUid()))
+                        if (!child.getKey().equals(mAuthUser.getFbUser().getUid())) {
                             Database.get().users.put(child.getKey(), child.getValue(User.class));
+                        }
 
                         // For self, read conversations (or at least the titles)
                         else {

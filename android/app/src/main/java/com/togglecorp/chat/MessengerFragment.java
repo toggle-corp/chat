@@ -1,6 +1,11 @@
 package com.togglecorp.chat;
 
 import android.app.Fragment;
+import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -33,6 +38,7 @@ public class MessengerFragment extends Fragment {
     private List<Message> mMessages = new ArrayList<>();
     private MessageAdapter mMessageAdapter;
     private RecyclerView mRecyclerView;
+    boolean mScrollToEnd = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,7 +57,6 @@ public class MessengerFragment extends Fragment {
         return root;
     }
 
-    boolean mScrollToEnd = false;
     private void refreshMessages() {
         if (mConversationId == null || mConversationId.length() == 0) {
             getActivity().findViewById(R.id.message_box).setVisibility(View.GONE);
@@ -102,9 +107,29 @@ public class MessengerFragment extends Fragment {
                         .child(mConversationId).child("messages").push();
                 newMessage.setValue(message);
                 mScrollToEnd = true;
+
+                pushNotification(message);
             }
         }
     };
+
+    private void pushNotification(Message message) {
+        Conversation conversation = Database.get().getConversation(mConversationId);
+        List<String> tokens = new ArrayList<>();
+        for (String userId: conversation.info.users) {
+            if (Database.get().users.containsKey(userId)) {
+                User user = Database.get().users.get(userId);
+                tokens.addAll(user.getTokens());
+            }
+        }
+
+        try {
+            FCMServer.pushNotification(Database.get().self.displayName,
+                    message.text, tokens);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void onStart() {
@@ -126,6 +151,7 @@ public class MessengerFragment extends Fragment {
             return;
 
         mConversationId = id;
+        mScrollToEnd = true;
         if (mStarted) {
             restartSync();
             refreshMessages();
@@ -203,4 +229,5 @@ public class MessengerFragment extends Fragment {
         }
         mListeners.clear();
     }
+
 }

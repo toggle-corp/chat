@@ -1,9 +1,14 @@
 package com.togglecorp.chat;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 public class User {
     public String displayName;
     public String email;
     public String photoUrl;
+    public HashMap<String, String> mTokens = new HashMap<>();
 
     public User() {}
 
@@ -11,5 +16,12 @@ public class User {
         this.displayName = displayName;
         this.email = email;
         this.photoUrl = photoUrl;
+    }
+
+    public List<String> getTokens() {
+        if (mTokens == null)
+            return new ArrayList<>();
+
+        return new ArrayList<>(mTokens.values());
     }
 }
