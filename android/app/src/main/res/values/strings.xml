@@ -8,5 +8,5 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="add">Add</string>
     <string name="participants">Participants</string>
-    <string name="title_optional">Title (optional)</string>
+    <string name="title_optional">Conversation Title</string>
 </resources>

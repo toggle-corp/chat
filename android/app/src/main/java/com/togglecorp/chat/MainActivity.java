@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                 "Conversations", null, 0));
         mNavItems.add(new NavigationDrawerItem(
                 getDrawable(R.drawable.ic_add), NavigationDrawerItem.ITEM,
-                "Add new", ADD_NEW_CONVERSATION));
+                "ADD NEW", ADD_NEW_CONVERSATION));
 
         Database db = Database.get();
 

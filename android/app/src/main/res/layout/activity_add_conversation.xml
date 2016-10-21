@@ -21,14 +21,15 @@
         android:orientation="vertical">
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
+            android:layout_height="wrap_content"
+            android:padding="@dimen/layout_spacing_sm">
             <EditText
                 android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/title_optional"
-                android:fontFamily="sans-serif-light"
+                android:textAllCaps="true"
+                android:padding="@dimen/layout_spacing_md"
                 android:inputType="text"
                 android:maxLines="1"
                 android:singleLine="true" />
@@ -39,10 +40,10 @@
             android:layout_height="wrap_content"
             android:text="@string/participants"
             android:textAllCaps="true"
-            android:paddingStart="@dimen/layout_spacing_md"
-            android:paddingEnd="@dimen/layout_spacing_md"
-            android:layout_marginTop="@dimen/layout_spacing_md"
-            android:layout_marginBottom="@dimen/layout_spacing_sm"/>
+            android:paddingStart="@dimen/layout_spacing_lg"
+            android:paddingEnd="@dimen/layout_spacing_lg"
+            android:layout_marginTop="@dimen/layout_spacing_lg"
+            android:layout_marginBottom="@dimen/layout_spacing_md"/>
         <android.support.v7.widget.RecyclerView
             android:id="@+id/peoples"
             android:layout_width="match_parent"

@@ -5,12 +5,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PeopleAdapter extends RecyclerView.Adapter<PeopleAdapter.PeopleViewHolder> {
     private List<User> mUsers;
@@ -43,13 +44,27 @@ public class PeopleAdapter extends RecyclerView.Adapter<PeopleAdapter.PeopleView
     public class PeopleViewHolder extends RecyclerView.ViewHolder{
         protected TextView name;
         protected TextView extra;
-        protected ImageView avatar;
+        protected CircleImageView avatar;
 
         PeopleViewHolder(View v){
             super(v);
+
             name = (TextView)v.findViewById(R.id.name);
             extra = (TextView)v.findViewById(R.id.extra);
-            avatar = (ImageView)v.findViewById(R.id.avatar);
+            avatar = (CircleImageView)v.findViewById(R.id.avatar);
+
+            v.setClickable(true);
+            v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(view.isSelected()) {
+                        view.setSelected(false);
+                    } else {
+                        view.setSelected(true);
+                    }
+                }
+            });
         }
+
     }
 }

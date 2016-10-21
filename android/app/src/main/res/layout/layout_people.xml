@@ -4,13 +4,15 @@
     android:layout_width="match_parent"
     android:clickable="true"
     android:focusable="true"
-    android:background="?attr/selectableItemBackground"
-    android:layout_height="wrap_content">
+    android:background="@drawable/selector_people"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/layout_spacing_sm"
+    android:paddingRight="@dimen/layout_spacing_sm">
     <LinearLayout
         android:layout_width="@dimen/avatar_lg"
         android:layout_height="@dimen/avatar_lg"
         android:gravity="center">
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/avatar"
             android:layout_width="@dimen/avatar_md"
             android:layout_height="@dimen/avatar_md"
@@ -20,6 +22,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
+        android:paddingLeft="@dimen/layout_spacing_sm"
+        android:paddingRight="@dimen/layout_spacing_sm"
         android:orientation="vertical">
         <TextView
             android:id="@+id/name"

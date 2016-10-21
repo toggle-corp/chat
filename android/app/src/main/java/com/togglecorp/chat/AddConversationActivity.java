@@ -29,6 +29,7 @@ public class AddConversationActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeButtonEnabled(true);
+            actionBar.setTitle("Add Conversation");
         }
 
         RecyclerView recyclerView = (RecyclerView) this.findViewById(R.id.peoples);

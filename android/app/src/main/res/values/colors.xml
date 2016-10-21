@@ -4,4 +4,7 @@
     <color name="colorPrimaryDark">#2e7d32</color>
     <color name="colorAccent">#2c3e50</color>
     <color name="colorBorder">#10000000</color>
+
+    <drawable name="peopleBackground">#fafafa</drawable>
+    <drawable name="peopleBackgroundChecked">#f0f0f0</drawable>
 </resources>
