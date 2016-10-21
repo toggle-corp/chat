@@ -65,6 +65,8 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
                     Picasso.with(mContext).load(item.getPhotoUrl()).into(viewHolder.icon);
                 else if (item.getIcon() != null)
                     viewHolder.icon.setImageDrawable(item.getIcon());
+                else
+                    viewHolder.icon.setImageDrawable(mContext.getDrawable(R.drawable.ic_avatar));
                 viewHolder.id = item.getId();
                 break;
             case NavigationDrawerItem.LABEL:

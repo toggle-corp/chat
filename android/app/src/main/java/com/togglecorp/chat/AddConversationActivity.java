@@ -97,13 +97,13 @@ public class AddConversationActivity extends AppCompatActivity {
         conversation.child("info").setValue(info);
 
         mDatabase.child("users").child(userId).child("conversations")
-                .child(conversation.getKey()).setValue(info.title);
+                .child(conversation.getKey()).setValue(info);
         mDatabase.child("users").child(userId).child("active_conversation")
                 .setValue(conversation.getKey());
 
         for (String selected: mPeopleAdapter.getSelected()) {
             mDatabase.child("users").child(selected).child("conversations")
-                    .child(conversation.getKey()).setValue(info.title);
+                    .child(conversation.getKey()).setValue(info);
         }
     }
 

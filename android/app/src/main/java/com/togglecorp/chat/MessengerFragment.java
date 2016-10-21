@@ -17,6 +17,8 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,13 +38,15 @@ public class MessengerFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_messenger, container, false);
 
         RecyclerView recyclerView = (RecyclerView)root.findViewById(R.id.messages);
-        recyclerView.setLayoutManager(new LinearLayoutManager(container.getContext()));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(container.getContext());
+        recyclerView.setLayoutManager(layoutManager);
 
         mMessageAdapter = new MessageAdapter();
         mMessageAdapter.setMessages(mMessages);
         recyclerView.setAdapter(mMessageAdapter);
 
         mDatabase = MainActivity.getDatabase();
+        layoutManager.setStackFromEnd(true);
         return root;
     }
 
@@ -61,6 +65,13 @@ public class MessengerFragment extends Fragment {
         for (HashMap.Entry<String, Message> entry: conversation.messages.entrySet()) {
             mMessages.add(entry.getValue());
         }
+
+        Collections.sort(mMessages, new Comparator<Message>() {
+            @Override
+            public int compare(Message m1, Message m2) {
+                return Long.valueOf(m1.time_sent).compareTo(Long.valueOf(m2.time_sent));
+            }
+        });
         mMessageAdapter.notifyDataSetChanged();
     }
 
@@ -137,10 +148,6 @@ public class MessengerFragment extends Fragment {
                     return;
                 Database.get().getConversation(mConversationId).info
                         = dataSnapshot.getValue(Conversation.Info.class);
-
-                if (getActivity() instanceof MainActivity) {
-                    ((MainActivity)getActivity()).refreshNavItems();
-                }
 
                 getActivity().setTitle(Database.get().getConversation(mConversationId)
                         .info.getTitle());

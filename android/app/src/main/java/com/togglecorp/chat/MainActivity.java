@@ -223,8 +223,8 @@ public class MainActivity extends AppCompatActivity {
 
                             for (DataSnapshot conversation:
                                     child.child("conversations").getChildren()) {
-                                Database.get().getConversation(conversation.getKey()).info.title =
-                                        conversation.getValue(String.class);
+                                Database.get().getConversation(conversation.getKey()).info =
+                                        conversation.getValue(Conversation.Info.class);
                             }
                         }
                     }

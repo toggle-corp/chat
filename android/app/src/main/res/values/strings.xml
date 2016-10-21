@@ -9,4 +9,5 @@
     <string name="add">Add</string>
     <string name="participants">Participants</string>
     <string name="title_optional">Conversation Title</string>
+    <string name="send">send</string>
 </resources>
