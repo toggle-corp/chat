@@ -36,7 +36,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             holder.sender.setText(Database.get().users.get(current.sender).displayName);
         else
             holder.sender.setText("Unknown");
-        holder.time.setText(new Date(current.time_sent).toString());
+        holder.time.setText(new Date((long)current.time_sent).toString());
         holder.text.setText(current.text);
     }
 

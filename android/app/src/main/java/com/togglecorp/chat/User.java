@@ -21,7 +21,6 @@ public class User {
     public List<String> getTokens() {
         if (tokens == null)
             return new ArrayList<>();
-
         return new ArrayList<>(tokens.values());
     }
 }

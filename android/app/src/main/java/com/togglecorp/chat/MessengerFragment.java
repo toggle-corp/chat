@@ -18,6 +18,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -32,13 +33,19 @@ public class MessengerFragment extends Fragment {
 
     private DatabaseReference mDatabase;
 
-    private String mConversationId = null;
+    // Has the fragment started?
     private boolean mStarted = false;
+
+    // Active conversation, list of its messages and their adapter
+    private String mConversationId = null;
     private List<Message> mMessages = new ArrayList<>();
     private MessageAdapter mMessageAdapter;
+
+    // Recycler view, its layout manager and the boolean variable for whether or
+    // not to scroll the messages when new messages appear.
     private RecyclerView mRecyclerView;
-    boolean mScrollToEnd = false;
     private LinearLayoutManager mLayoutManager;
+    boolean mScrollToEnd = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -54,71 +61,88 @@ public class MessengerFragment extends Fragment {
 
         mDatabase = MainActivity.getDatabase();
         mLayoutManager.setStackFromEnd(true);
+
+        // Send message button listener
+        root.findViewById(R.id.send_message).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendMessage();
+            }
+        });
         return root;
     }
 
     private void refreshMessages() {
+        // If we have no active conversation, do not show the message box
         if (mConversationId == null || mConversationId.length() == 0) {
             getActivity().findViewById(R.id.message_box).setVisibility(View.GONE);
             return;
         }
-        getActivity().findViewById(R.id.message_box).setVisibility(View.VISIBLE);
-        getActivity().findViewById(R.id.send_message).setOnClickListener(mSendListener);
 
+        // Otherwise show the message box
+        getActivity().findViewById(R.id.message_box).setVisibility(View.VISIBLE);
+
+        // Get the active conversation and show the activity title accordingly
         Conversation conversation = Database.get().getConversation(mConversationId);
         getActivity().setTitle(conversation.info.getTitle().toUpperCase());
 
+        // If the last item is currently visible, that means when new messages
+        // are received, we should still scroll to end.
         if (mLayoutManager.findLastVisibleItemPosition() == mMessages.size()-1)
             mScrollToEnd = true;
 
+        // Get all messages
         mMessages.clear();
         for (HashMap.Entry<String, Message> entry: conversation.messages.entrySet()) {
             mMessages.add(entry.getValue());
         }
-
+        // And sort them
         Collections.sort(mMessages, new Comparator<Message>() {
             @Override
             public int compare(Message m1, Message m2) {
-                return Long.valueOf(m1.time_sent).compareTo(m2.time_sent);
+                return Long.valueOf((long)m1.time_sent).compareTo((long)m2.time_sent);
             }
         });
+        // And notify the adapter to refresh
         mMessageAdapter.notifyDataSetChanged();
 
+        // If needed, scroll to the last message
         if (mScrollToEnd)
             mRecyclerView.scrollToPosition(mMessages.size()-1);
         mScrollToEnd = false;
     }
 
-    private View.OnClickListener mSendListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            if (mConversationId == null || mConversationId.length() == 0)
-                return;
+    private void sendMessage() {
+        if (mConversationId == null || mConversationId.length() == 0)
+            return;
 
-            EditText editMessage = (EditText)getActivity().findViewById(R.id.edit_message);
-            String text = editMessage.getText().toString();
-            editMessage.setText("");
-            if (text.length() > 0) {
-                Message message = new Message();
-                message.text = text;
-                message.sender = Database.get().selfId;
-                message.time_sent = System.currentTimeMillis();
-                message.time_delivered = 0;
-                message.status = 0;
+        // Get the message text, clear the text box and create and send new message
+        EditText editMessage = (EditText)getActivity().findViewById(R.id.edit_message);
+        String text = editMessage.getText().toString();
+        editMessage.setText("");
 
-                DatabaseReference newMessage = mDatabase.child("conversations")
-                        .child(mConversationId).child("messages").push();
-                newMessage.setValue(message);
-                mScrollToEnd = true;
+        if (text.length() > 0) {
+            Message message = new Message();
+            message.text = text;
+            message.sender = Database.get().selfId;
+            message.time_sent = ServerValue.TIMESTAMP;  // System.currentTimeMillis();
+            message.status = 0;
 
-                pushNotification(message);
-            }
+            DatabaseReference newMessage = mDatabase.child("conversations")
+                    .child(mConversationId).child("messages").push();
+            newMessage.setValue(message);
+            mScrollToEnd = true;
+
+            // Push notification to every recipient
+            pushNotification(message);
         }
-    };
+    }
 
     private void pushNotification(Message message) {
         Conversation conversation = Database.get().getConversation(mConversationId);
         List<String> tokens = new ArrayList<>();
+
+        // Get tokens of all recipients
         for (String userId: conversation.info.users) {
             if (Database.get().users.containsKey(userId)) {
                 User user = Database.get().users.get(userId);
@@ -126,6 +150,7 @@ public class MessengerFragment extends Fragment {
             }
         }
 
+        // Send the notification to all the tokens
         new FCMServer.PushNotificationTask(Database.get().self.displayName,
                     message.text, mConversationId, tokens).execute();
     }
@@ -180,7 +205,6 @@ public class MessengerFragment extends Fragment {
                     return;
                 Database.get().getConversation(mConversationId).info
                         = dataSnapshot.getValue(Conversation.Info.class);
-
                 getActivity().setTitle(Database.get().getConversation(mConversationId)
                         .info.getTitle());
             }
@@ -201,10 +225,6 @@ public class MessengerFragment extends Fragment {
                     return;
                 Conversation conversation = Database.get().getConversation(mConversationId);
                 for (DataSnapshot message: dataSnapshot.getChildren()) {
-                    if (message.child("time_delivered").getValue(Long.class) == 0)
-                        message.child("time_delivered").getRef()
-                                .setValue(System.currentTimeMillis());
-
                     conversation.messages.put(message.getKey(),
                             message.getValue(Message.class));
 
