@@ -21,6 +21,10 @@ public class FCMMessagingService extends FirebaseMessagingService {
             Map<String, String> message = remoteMessage.getData();
             sendNotification(message.get("title"), message.get("body"),
                     message.get("conversation"));
+
+            Intent intent = new Intent(MessengerFragment.BROADCAST_INTENT);
+            intent.putExtra("conversation", message.get("conversation"));
+            sendBroadcast(intent);
         }
 
     }

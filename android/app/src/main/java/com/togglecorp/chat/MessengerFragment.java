@@ -9,7 +9,6 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,21 +38,22 @@ public class MessengerFragment extends Fragment {
     private MessageAdapter mMessageAdapter;
     private RecyclerView mRecyclerView;
     boolean mScrollToEnd = false;
+    private LinearLayoutManager mLayoutManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_messenger, container, false);
 
         mRecyclerView = (RecyclerView)root.findViewById(R.id.messages);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(container.getContext());
-        mRecyclerView.setLayoutManager(layoutManager);
+        mLayoutManager = new LinearLayoutManager(container.getContext());
+        mRecyclerView.setLayoutManager(mLayoutManager);
 
         mMessageAdapter = new MessageAdapter();
         mMessageAdapter.setMessages(mMessages);
         mRecyclerView.setAdapter(mMessageAdapter);
 
         mDatabase = MainActivity.getDatabase();
-        layoutManager.setStackFromEnd(true);
+        mLayoutManager.setStackFromEnd(true);
         return root;
     }
 
@@ -67,6 +67,9 @@ public class MessengerFragment extends Fragment {
 
         Conversation conversation = Database.get().getConversation(mConversationId);
         getActivity().setTitle(conversation.info.getTitle().toUpperCase());
+
+        if (mLayoutManager.findLastVisibleItemPosition() == mMessages.size()-1)
+            mScrollToEnd = true;
 
         mMessages.clear();
         for (HashMap.Entry<String, Message> entry: conversation.messages.entrySet()) {
@@ -82,7 +85,7 @@ public class MessengerFragment extends Fragment {
         mMessageAdapter.notifyDataSetChanged();
 
         if (mScrollToEnd)
-            mRecyclerView.smoothScrollToPosition(mMessages.size());
+            mRecyclerView.scrollToPosition(mMessages.size()-1);
         mScrollToEnd = false;
     }
 
@@ -225,5 +228,33 @@ public class MessengerFragment extends Fragment {
         }
         mListeners.clear();
     }
+
+
+
+    // FCM broadcast receiver.
+    public static final String BROADCAST_INTENT = "TOGGLE:CHAT_MESSAGE_RECEIVED";
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().registerReceiver(mMessageReceiver, new IntentFilter(BROADCAST_INTENT));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().unregisterReceiver(mMessageReceiver);
+    }
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getStringExtra("conversation").equals(mConversationId)) {
+                NotificationManager notificationManager =
+                        (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.cancel(0);
+            }
+        }
+    };
 
 }

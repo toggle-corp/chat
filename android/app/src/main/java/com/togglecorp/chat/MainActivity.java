@@ -1,6 +1,10 @@
 package com.togglecorp.chat;
 
+import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -11,7 +15,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -109,12 +112,6 @@ public class MainActivity extends AppCompatActivity {
         };
         mDrawerLayout.addDrawerListener(drawerListener);
         drawerListener.syncState();
-
-        // Get active conversation
-        if (getIntent().hasExtra("active_conversation")) {
-            changeConversation(getIntent().getStringExtra("active_conversation"));
-            getIntent().removeExtra("active_conversation");
-        }
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -129,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
 
     private final int ADD_NEW_CONVERSATION = -100;
     private HashMap<Integer, String> mNavConversationIds = new HashMap<>();
+
     public void refreshNavItems() {
         mNavItems.clear();
         mNavConversationIds.clear();
@@ -194,6 +192,12 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         refreshNavItems();
         startSync();
+
+        // Get active conversation
+        if (getIntent().hasExtra("active_conversation")) {
+            changeConversation(getIntent().getStringExtra("active_conversation"));
+            getIntent().removeExtra("active_conversation");
+        }
     }
 
     @Override
